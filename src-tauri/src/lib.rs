@@ -6,6 +6,7 @@ use mongodb::{
 
 const URI: &str = "mongodb://localhost:27017";
 lazy_static! {
+    // hopefully editing entries is possible like this
     static ref client: Client = Client::with_uri_str(URI).unwrap();
     static ref database: Database = client.database("ProspectDb");
     static ref settings: Collection<Document> = database.collection("PlayFabUserData");

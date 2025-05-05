@@ -14,6 +14,7 @@ function spawnNode(text) {
 }
 
 function get_stash() {
+    inventory.innerHTML="";
   let data = get_data("Inventory");
   data.then((res) => {
     res.forEach((e) => {
@@ -23,6 +24,7 @@ function get_stash() {
 }
 
 function get_loadout() {
+    inventory.innerHTML="";
   let data = get_data("LOADOUT");
   data.then((res) => {
     const shield = res["shield"];
