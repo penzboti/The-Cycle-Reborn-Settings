@@ -16,6 +16,9 @@ Editing The Cycle Reborn server data without you having to manually do it trough
 - skip tutorial (for new saves in save slot feature)
 - negative & really high durability for armor
 - positive durability to items
+- make unstackable items stacked
+- item id not a real item
+- overstack items
 - forge perks
 - attachments
 
