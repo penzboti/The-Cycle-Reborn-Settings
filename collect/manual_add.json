@@ -1,0 +1,66 @@
+[
+  {
+    "id": "WP_E_Launch_Nade_01",
+    "name": "FF4 Detonator",
+    "type": "weapon",
+    "rarity": "Legendary",
+    "image": "https://static.wikia.nocookie.net/thecycle_gamepedia_en/images/6/6b/FF4_Detonator.png/revision/latest",
+    "itemInfo": {}
+  },
+  {
+    "id": "WP_A_HVY_Shell_01",
+    "name": "KARLA",
+    "type": "weapon",
+    "rarity": "Legendary",
+    "image": "https://static.wikia.nocookie.net/thecycle_gamepedia_en/images/8/81/KARLA.png/revision/latest",
+    "itemInfo": {}
+  },
+  {
+    "id": "WP_D_HVY_Exotic_01",
+    "name": "HAZE",
+    "type": "weapon",
+    "rarity": "Legendary",
+    "image": "https://static.wikia.nocookie.net/thecycle_gamepedia_en/images/d/de/HAZE.png/revision/latest",
+    "itemInfo": {}
+  },
+  {
+    "id": "Ammo_Light",
+    "name": "Basic Light ammo",
+    "type": "ammunition",
+    "rarity": "Common",
+    "image": "https://cdn.wikimg.net/en/tcfwiki/images/thumb/0/05/Basic_Light_Ammo.png/24px-Basic_Light_Ammo.png",
+    "itemInfo": {}
+  },
+  {
+    "id": "Ammo_Medium",
+    "name": "Basic Medium ammo",
+    "type": "ammunition",
+    "rarity": "Common",
+    "image": "https://cdn.wikimg.net/en/tcfwiki/images/thumb/0/09/Basic_Medium_Ammo.png/36px-Basic_Medium_Ammo.png",
+    "itemInfo": {}
+  },
+  {
+    "id": "Ammo_Heavy",
+    "name": "Basic Heavy ammo",
+    "type": "ammunition",
+    "rarity": "Common",
+    "image": "https://cdn.wikimg.net/en/tcfwiki/images/thumb/0/0d/Basic_Heavy_Ammo.png/36px-Basic_Heavy_Ammo.png",
+    "itemInfo": {}
+  },
+  {
+    "id": "Ammo_Shotgun",
+    "name": "Basic Shotgun ammo",
+    "type": "ammunition",
+    "rarity": "Common",
+    "image": "https://cdn.wikimg.net/en/tcfwiki/images/thumb/0/0f/Basic_Shotgun_Ammo.png/36px-Basic_Shotgun_Ammo.png",
+    "itemInfo": {}
+  },
+  {
+    "id": "Ammo_Special",
+    "name": "Derelict Ammo",
+    "type": "ammunition",
+    "rarity": "Rare",
+    "image": "https://cdn.wikimg.net/en/tcfwiki/images/thumb/b/b0/Special_Ammo.png/36px-Special_Ammo.png",
+    "itemInfo": {}
+  }
+]

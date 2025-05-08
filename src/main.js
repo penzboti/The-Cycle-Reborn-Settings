@@ -1,47 +1,85 @@
 const { invoke } = window.__TAURI__.core;
 const body = document.querySelector("body");
 
-async function get_data(data) {
-  let res = await invoke("get_data", { data });
+let items = [];
+invoke("get_item_list").then((data) => (items = JSON.parse(data)));
+
+async function get_data(key) {
+  let res = await invoke("get_data", { key });
   let json = await JSON.parse(res);
   return Promise.resolve(json);
 }
 
-function spawnNode(text) {
-  let node = document.createElement("p");
+function spawnNode(id, text, imgsrc) {
+  let node = document.createElement("div");
   node.innerText = text;
-  inventory.appendChild(node);
+  if (typeof imgsrc !== "undefined") {
+    node.innerHTML = `<img src="${imgsrc}"><p>${text}</p>`;
+  }
+  node.classList.add("item");
+  document.getElementById(id).appendChild(node);
 }
 
 function get_stash() {
-    inventory.innerHTML="";
+  stash.innerHTML = "";
   let data = get_data("Inventory");
   data.then((res) => {
     res.forEach((e) => {
-      spawnNode(JSON.stringify(e));
+      spawnNode("stash", JSON.stringify(e));
     });
   });
 }
 
 function get_loadout() {
-    inventory.innerHTML="";
+  inventory.innerHTML = "";
   let data = get_data("LOADOUT");
   data.then((res) => {
-    const shield = res["shield"];
-    const helmet = res["helmet"];
-    const bag = res["bag"];
-    const weaponOne = res["weaponOne"];
-    const weaponTwo = res["weaponTwo"];
+    let nodes = {
+      shield: res["shield"],
+      helmet: res["helmet"],
+      bag: res["bag"],
+      weaponOne: res["weaponOne"],
+      weaponTwo: res["weaponTwo"],
 
-    const bagItems = JSON.parse(res["bagItemsAsJsonStr"]);
-    const safeItems = JSON.parse(res["safeItemsAsJsonStr"]);
+      bagItems: JSON.stringify(JSON.parse(res["bagItemsAsJsonStr"])),
+      safeItems: JSON.stringify(JSON.parse(res["safeItemsAsJsonStr"])),
+    };
+    let text = {
+      shield: "Shield: ",
+      helmet: "Helmet: ",
+      bag: "Bag: ",
+      weaponOne: "Weapon 1: ",
+      weaponTwo: "Weapon 2: ",
+      bagItems: "Bag Items: ",
+      safeItems: "Safe Pockets: ",
+    };
+    Object.keys(nodes).forEach((key) => {
+      spawnNode("inventory", text[key] + nodes[key]);
+    });
+  });
+}
 
-    spawnNode("shield: " + shield);
-    spawnNode("helmet: " + helmet);
-    spawnNode("bag: " + bag);
-    spawnNode("weaponOne: " + weaponOne);
-    spawnNode("weaponTwo: " + weaponTwo);
-    spawnNode("Bag Items: " + JSON.stringify(bagItems));
-    spawnNode("Safe Pockets: " + JSON.stringify(safeItems));
+async function change_bp() {
+  let res = await invoke("write_data", {
+    key: "FortunaPass2_PremiumUnlock",
+    value: "false",
+  });
+  console.log(res);
+  if (res === false) {
+    console.log("error when writing");
+  }
+}
+
+function reset_children() {
+  const pages = ["inventory", "stash", "items"];
+  pages.forEach((key) => {
+    document.getElementById(key).innerHTML = "";
+  });
+}
+
+function list_items() {
+  document.getElementById("items").innerHTML = "";
+  items.forEach((e) => {
+    spawnNode("items", `${e.name}: ${e.id} ${e.type}`, e.image);
   });
 }

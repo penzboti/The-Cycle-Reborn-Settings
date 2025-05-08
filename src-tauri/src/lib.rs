@@ -14,21 +14,41 @@ lazy_static! {
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
-fn get_data(data: String) -> String {
-    let inventory = settings
-        .find_one(doc! { "Key": data })
+fn get_data(key: String) -> String {
+    let entry = settings
+        .find_one(doc! { "Key": key })
         .run()
         .unwrap()
         .unwrap();
-    let inv = inventory.get("Value").unwrap().as_str().unwrap();
-    inv.to_owned()
+    let value = entry.get("Value").unwrap().as_str().unwrap();
+    value.to_owned()
+}
+
+#[tauri::command]
+fn write_data(key: String, value: String) -> bool {
+    let filter_doc = doc! { "Key": key };
+    let update_doc = doc! {
+        "$set": doc! { "Value": value }
+    };
+
+    let res = settings.update_one(filter_doc, update_doc).run();
+    res.is_ok()
+}
+
+#[tauri::command]
+fn get_item_list() -> String {
+    std::fs::read_to_string("../collect/result/items.json").unwrap()
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![get_data])
+        .invoke_handler(tauri::generate_handler![
+            get_data,
+            write_data,
+            get_item_list
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

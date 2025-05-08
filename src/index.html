@@ -2,15 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Cycle Reborn Settings</title>
   </head>
 
   <body>
-    <button type="button" onclick="get_stash()">Get stash</button>
-    <button type="button" onclick="get_loadout()">Get loadout</button>
-    <div id="inventory"></div>
+    <div id="menu">
+      <button type="button" onclick="get_stash()">Get stash</button>
+      <button type="button" onclick="get_loadout()">Get loadout</button>
+      <button type="reset" onclick="reset_children()">Clear</button>
+      <button type="button" onclick="list_items()">List Items</button>
+    </div>
+    <div id="content">
+      <div id="inventory"></div>
+      <div id="stash"></div>
+      <div id="items"></div>
+    </div>
     <script src="/main.js"></script>
   </body>
 </html>
