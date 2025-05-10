@@ -20,8 +20,9 @@ const extraAdditionsPath = "./manual_add.json";
 const extreRemovalsPath = "./manual_remove.json";
 
 // TODO: heavy mining tool & scanner
-// images to be loaded with asset server w/ tauri
-let manualAdditions = JSON.parse(
+// images to be loaded with asset server w/ tauri (its done)
+// now you just have to download all the images
+const manualAdditions = JSON.parse(
   fs.readFileSync(extraAdditionsPath, {
     encoding: "utf8",
     flag: "r",
@@ -30,16 +31,24 @@ let manualAdditions = JSON.parse(
 
 // removing season 3, and not-item (they were in the list) items.
 // TODO: idk if tactical & resto gear are also s3 additions
-let manualRemovals = JSON.parse(
+const manualRemovals = JSON.parse(
   fs.readFileSync(extreRemovalsPath, {
     encoding: "utf8",
     flag: "r",
   }),
 );
 
+// all downloaded images
+const imageItems = fs
+  .readdirSync("../images/")
+  .map((e) => e.replace(".png", ""));
+
+const download_argument = "--download-images";
+const argument = process.argv[2];
+
 let itemList = [...manualAdditions];
 
-function getImage(underscore, _id) {
+function getImageUrl(underscore, _id) {
   return new Promise((res, rej) => {
     console.log("getting", underscore, "=", _id);
     let url = `https://thecyclefrontier.wiki/wiki/File:${underscore}.png`;
@@ -79,12 +88,12 @@ for (const fileName of neededFiles) {
 
   let type = fileName.replace("s.json", "").toLowerCase();
 
-  // for (const key of [""]) {
-  for (const key of Object.keys(object)) {
-    let item = object[key];
-    let name = item.inGameName;
+  // for (const id of [""]) {
+  for (const id of Object.keys(object)) {
+    const item = object[id];
+    const name = item.inGameName;
 
-    if (manualRemovals.includes(key) || manualRemovals.includes(name)) continue;
+    if (manualRemovals.includes(id) || manualRemovals.includes(name)) continue;
 
     let itemInfo = {};
     switch (type) {
@@ -103,15 +112,23 @@ for (const fileName of neededFiles) {
     }
 
     let underscore = name.replaceAll(" ", "_");
-    // console.log(key);
-    let image = await getImage(underscore, key);
+    let image = "";
+    // if its downloaded already
+    if (imageItems.includes(id)) {
+      image = `$RESOURCE/images/${key}.png`;
+    } else {
+      image = await getImageUrl(underscore, id);
+      if (argument === download_argument) {
+        // download_image(image);
+      }
+    }
 
     itemList.push({
-      id: key,
+      id,
       name,
       type,
       rarity: item["rarity"],
-      // currently, images are http links, but i could maybe download them, so that this works offline? does tc:r work offline?
+      // i still don't know if tc:r works offline or not
       image,
       itemInfo,
     });

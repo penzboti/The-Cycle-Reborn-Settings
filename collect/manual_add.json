@@ -4,7 +4,7 @@
     "name": "FF4 Detonator",
     "type": "weapon",
     "rarity": "Legendary",
-    "image": "https://static.wikia.nocookie.net/thecycle_gamepedia_en/images/6/6b/FF4_Detonator.png/revision/latest",
+    "image": "$RESOURCE/images/WP_E_Launch_Nade_01.png",
     "itemInfo": {}
   },
   {
@@ -12,7 +12,7 @@
     "name": "KARLA",
     "type": "weapon",
     "rarity": "Legendary",
-    "image": "https://static.wikia.nocookie.net/thecycle_gamepedia_en/images/8/81/KARLA.png/revision/latest",
+    "image": "$RESOURCE/images/WP_A_HVY_Shell_01.png",
     "itemInfo": {}
   },
   {
@@ -20,7 +20,7 @@
     "name": "HAZE",
     "type": "weapon",
     "rarity": "Legendary",
-    "image": "https://static.wikia.nocookie.net/thecycle_gamepedia_en/images/d/de/HAZE.png/revision/latest",
+    "image": "$RESOURCE/images/WP_D_HVY_Exotic_01.png",
     "itemInfo": {}
   },
   {
