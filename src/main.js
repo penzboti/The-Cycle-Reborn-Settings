@@ -1,8 +1,18 @@
-const { invoke } = window.__TAURI__.core;
-const body = document.querySelector("body");
+const { invoke, convertFileSrc } = window.__TAURI__.core;
+const { resolveResource } = window.__TAURI__.path;
+const { readTextFile } = window.__TAURI__.fs;
 
 let items = [];
-invoke("get_item_list").then((data) => (items = JSON.parse(data)));
+// a module would allow async access to this
+// but then i cant access function made here in the html
+// TODO: look into this
+window.__TAURI__.fs
+  .readTextFile("items.json", {
+    baseDir: 11,
+  })
+  .then((data) => {
+    items = JSON.parse(data);
+  });
 
 async function get_data(key) {
   let res = await invoke("get_data", { key });
@@ -77,9 +87,17 @@ function reset_children() {
   });
 }
 
-function list_items() {
+async function list_items() {
   document.getElementById("items").innerHTML = "";
-  items.forEach((e) => {
-    spawnNode("items", `${e.name}: ${e.id} ${e.type}`, e.image);
-  });
+  // items.forEach((e) => {
+  for (const e of items) {
+    let image = e.image;
+    if (image.includes("$RESOURCE")) {
+      image = await convertFileSrc(
+        await resolveResource(image.replace("$RESOURCE/", "")),
+      );
+    }
+
+    spawnNode("items", `${e.name}: ${e.id} ${e.type}`, image);
+  }
 }

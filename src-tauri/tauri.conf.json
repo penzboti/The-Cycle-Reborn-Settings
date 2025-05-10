@@ -16,7 +16,13 @@
       }
     ],
     "security": {
-      "csp": null
+      "csp": {
+        "img-src": "'self' http://asset.localhost blob: data:"
+      },
+      "assetProtocol": {
+        "enable": true,
+        "scope": ["$RESOURCE/images/*"]
+      }
     }
   },
   "bundle": {
@@ -28,6 +34,11 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "resources": {
+      "../images/": "/images/",
+      "../images/test.png": "test.png",
+      "../collect/result/items.json": "items.json"
+    }
   }
 }
