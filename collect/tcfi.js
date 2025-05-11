@@ -1,5 +1,6 @@
 import fs from "fs";
 import * as cheerio from "cheerio";
+import * as client from "https";
 
 const neededFiles = [
   "attachments.json",
@@ -14,21 +15,49 @@ const neededFiles = [
   // in fact, there is one left out of it: PlayerDefault, which we dont need,
   // but now all the items are nicely categorized
 ];
+
+// all downloaded images
+const imageItems = fs
+  .readdirSync("../images/")
+  .map((e) => e.replace(".png", ""));
+
+// if you dont add the download argument, it uses the links if the file is not present
+const download_argument = "--download-images";
+const argument = process.argv[2];
+if (argument === download_argument) {
+  console.log("With downloading images.");
+} else {
+  console.log("Without downloading images!");
+}
+
 const inPath = "./TCF-Information/";
 const outPath = "./result/items.json";
-const extraAdditionsPath = "./manual_add.json";
-const extreRemovalsPath = "./manual_remove.json";
 
+const extraAdditionsPath = "./manual_add.json";
 // TODO: heavy mining tool & scanner
-// images to be loaded with asset server w/ tauri (its done)
-// now you just have to download all the images
+// TODO: ammo images; screenshot in game
 const manualAdditions = JSON.parse(
   fs.readFileSync(extraAdditionsPath, {
     encoding: "utf8",
     flag: "r",
   }),
 );
+const errorImage = "$RESOURCE/images/jeff.png";
+for (let item of manualAdditions) {
+  const id = item.id;
+  if (item.image === "png") {
+    item.image = `$RESOURCE/images/${id}.png`;
+  }
+  if (item.image === "") {
+    item.image = errorImage;
+  }
+}
+for (let image of fs.readdirSync("./manual_images/")) {
+  if (imageItems.includes(image.replace(".png", ""))) continue;
+  fs.cpSync(`./manual_images/${image}`, `../images/${image}`);
+}
 
+const extreRemovalsPath = "./manual_remove.json";
 // removing season 3, and not-item (they were in the list) items.
 // TODO: idk if tactical & resto gear are also s3 additions
 const manualRemovals = JSON.parse(
@@ -38,88 +67,115 @@ const manualRemovals = JSON.parse(
   }),
 );
 
-// all downloaded images
-const imageItems = fs
-  .readdirSync("../images/")
-  .map((e) => e.replace(".png", ""));
-
-const download_argument = "--download-images";
-const argument = process.argv[2];
-
 let itemList = [...manualAdditions];
 
-function getImageUrl(underscore, _id) {
-  return new Promise((res, rej) => {
-    console.log("getting", underscore, "=", _id);
-    let url = `https://thecyclefrontier.wiki/wiki/File:${underscore}.png`;
-    cheerio.fromURL(url).then(($) => {
-      let links = $(".fullMedia > p > a");
-      // $(links).each(function (i, link) {
-      //   console.log($(link).text() + " -> " + $(link).attr("href"));
-      // });
-      let array = [];
-      $(links).each(function (i, link) {
-        let thing = $(link);
-        array.push(thing);
-      });
-      for (const thing of array) {
-        let text = thing.text();
-        let href = "https:" + thing.attr("href");
-
-        // redirects break this
-        // if (!href.includes("cdn.wikimg.net") || !text.includes(underscore))
-        //   continue;
-        res(href);
-      }
-      rej("");
-    });
+// https://scrapingant.com/blog/download-image-javascript
+function downloadImage(url, filepath) {
+  return new Promise((resolve, reject) => {
+    client
+      .get(url, (res) => {
+        res.pipe(fs.createWriteStream(filepath));
+      })
+      .on("error", (data) => reject(data))
+      .once("close", () => resolve(filepath));
   });
 }
 
-let folder = fs.readdirSync(inPath);
+// https://stackoverflow.com/questions/15343292/extract-all-hyperlinks-from-external-website-using-node-js-and-request
+function getImageUrl(underscore) {
+  return new Promise((resolve, reject) => {
+    console.log("getting image url");
+    let url = `https://thecyclefrontier.wiki/wiki/File:${underscore}.png`;
+    cheerio
+      .fromURL(url)
+      .then(($) => {
+        let links = $(".fullMedia > p > a");
+        // printing all links (DEBUG)
+        // $(links).each(function (_, link) {
+        //   console.log($(link).text() + " -> " + $(link).attr("href"));
+        // });
+        let array = [];
+        $(links).each(function (_, link) {
+          let thing = $(link);
+          array.push(thing);
+        });
+        for (const thing of array) {
+          let href = "https:" + thing.attr("href");
+          resolve(href);
+        }
+        if (array.length === 0) reject();
+      })
+      .catch(() => reject());
+  });
+}
+
+const folder = fs.readdirSync(inPath);
 for (const fileName of neededFiles) {
   if (!folder.includes(fileName)) continue;
-  console.log(fileName);
+  console.log("\n", fileName);
   let string = fs.readFileSync(inPath + fileName, {
     encoding: "utf8",
     flag: "r",
   });
-  let object = JSON.parse(string);
+  const object = JSON.parse(string);
 
-  let type = fileName.replace("s.json", "").toLowerCase();
+  const type = fileName.replace("s.json", "").toLowerCase();
 
   // for (const id of [""]) {
   for (const id of Object.keys(object)) {
     const item = object[id];
     const name = item.inGameName;
+    const rarity = item["rarity"];
+    let itemInfo = {};
 
+    // removing unnecessary items
     if (manualRemovals.includes(id) || manualRemovals.includes(name)) continue;
 
-    let itemInfo = {};
     switch (type) {
-      case "attachment":
-        itemInfo = {
-          type: item["type"],
-        };
-        break;
-      // because there are no good images for ammo, i added them manually
+      // mass removing unnecessary items
+      // TODO: do it in string in json, then split and use it here
       case "material":
         if (name.includes("ammo") || name.includes("Ammo")) continue;
         break;
       case "weapon":
         if (name.includes("Prototype") || name.includes("Mk.II")) continue;
         break;
+      // adding itemInfo
+      case "attachment":
+        itemInfo = {
+          type: item["type"],
+        };
+        break;
     }
 
-    let underscore = name.replaceAll(" ", "_");
-    let image = "";
-    // if its downloaded already
-    if (imageItems.includes(id)) {
-      image = `$RESOURCE/images/${key}.png`;
-    } else {
-      image = await getImageUrl(underscore, id);
-      if (argument === download_argument) {
-        // download_image(image);
+    // then all items not removed are being worked on
+    console.log(`${id} \t\t ${name}`);
+
+    const underscore = name.replaceAll(" ", "_");
+    let image = imageItems.includes(id)
+      ? `$RESOURCE/images/${id}.png`
+      : await getImageUrl(underscore)
+          .then((data) => {
+            return data;
+          })
+          .catch(() => {
+            return errorImage;
+          });
+    if (argument === download_argument);
+    {
+      if (image.includes("$RESOURCE")) {
+        // console.log("image is already downloaded");
+      } else {
+        console.log(image);
+        await downloadImage(image, `../images/${id}.png`)
+          .then((data) => {
+            image = data.replace("..", "$RESOURCE");
+            console.log("downloaded image");
+          })
+          .catch(() => {
+            image = errorImage;
+            console.log("error downloading image");
+          });
       }
     }
 
@@ -127,7 +183,7 @@ for (const fileName of neededFiles) {
       id,
       name,
       type,
-      rarity: item["rarity"],
+      rarity,
       // i still don't know if tc:r works offline or not
       image,
       itemInfo,

@@ -4,7 +4,7 @@
     "name": "FF4 Detonator",
     "type": "weapon",
     "rarity": "Legendary",
-    "image": "$RESOURCE/images/WP_E_Launch_Nade_01.png",
+    "image": "png",
     "itemInfo": {}
   },
   {
@@ -12,7 +12,7 @@
     "name": "KARLA",
     "type": "weapon",
     "rarity": "Legendary",
-    "image": "$RESOURCE/images/WP_A_HVY_Shell_01.png",
+    "image": "png",
     "itemInfo": {}
   },
   {
@@ -20,7 +20,7 @@
     "name": "HAZE",
     "type": "weapon",
     "rarity": "Legendary",
-    "image": "$RESOURCE/images/WP_D_HVY_Exotic_01.png",
+    "image": "png",
     "itemInfo": {}
   },
   {

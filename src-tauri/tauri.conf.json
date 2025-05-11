@@ -36,8 +36,7 @@
       "icons/icon.ico"
     ],
     "resources": {
-      "../images/": "/images/",
-      "../images/test.png": "test.png",
+      "../images/": "images/",
       "../collect/result/items.json": "items.json"
     }
   }
