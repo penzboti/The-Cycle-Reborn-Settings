@@ -1,24 +1,6 @@
-const { invoke, convertFileSrc } = window.__TAURI__.core;
+import { get_data, write_data, items } from "./module.js";
+const { convertFileSrc } = window.__TAURI__.core;
 const { resolveResource } = window.__TAURI__.path;
-const { readTextFile } = window.__TAURI__.fs;
-
-let items = [];
-// a module would allow async access to this
-// but then i cant access function made here in the html
-// TODO: look into this
-window.__TAURI__.fs
-  .readTextFile("items.json", {
-    baseDir: 11,
-  })
-  .then((data) => {
-    items = JSON.parse(data);
-  });
-
-async function get_data(key) {
-  let res = await invoke("get_data", { key });
-  let json = await JSON.parse(res);
-  return Promise.resolve(json);
-}
 
 function spawnNode(id, text, imgsrc) {
   let node = document.createElement("div");
@@ -69,15 +51,12 @@ function get_loadout() {
   });
 }
 
-async function change_bp() {
-  let res = await invoke("write_data", {
-    key: "FortunaPass2_PremiumUnlock",
-    value: "false",
-  });
-  console.log(res);
-  if (res === false) {
-    console.log("error when writing");
-  }
+function change_bp() {
+  let key = "FortunaPass2_PremiumUnlock";
+  let value = "false";
+  write_data(key, value)
+    .then(() => alert("changed battlepass"))
+    .catch(() => alert("error when changing battlepass"));
 }
 
 function reset_children() {
@@ -100,4 +79,18 @@ async function list_items() {
 
     spawnNode("items", `${e.name}: ${e.id} ${e.type}`, image);
   }
+}
+
+// allow modules to load to global scope
+// that means being able to use it in html & the javascript console
+const exports = [
+  list_items,
+  change_bp,
+  get_stash,
+  get_loadout,
+  reset_children,
+  // items,
+];
+for (const fn of exports) {
+  globalThis[fn.name] = fn;
 }
