@@ -2,6 +2,7 @@ import fs from "fs";
 import * as cheerio from "cheerio";
 import * as client from "https";
 
+// uses the github repo TCF-Wiki/TCF-Information
 const neededFiles = [
   "attachments.json",
   "backpacks.json",

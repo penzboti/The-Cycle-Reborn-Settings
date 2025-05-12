@@ -37,7 +37,7 @@
     ],
     "resources": {
       "../images/": "images/",
-      "../collect/result/items.json": "items.json"
+      "../items/result/items.json": "items.json"
     }
   }
 }
