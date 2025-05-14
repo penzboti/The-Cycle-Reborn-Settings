@@ -1,7 +1,8 @@
-import { get_data, write_data, items } from "./module.js";
+import { get_data, write_data, items, queries } from "./scripts/module.js";
 const { convertFileSrc } = window.__TAURI__.core;
 const { resolveResource } = window.__TAURI__.path;
 
+// will remove this later
 function spawnNode(id, text, imgsrc) {
   let node = document.createElement("div");
   node.innerText = text;
@@ -13,8 +14,8 @@ function spawnNode(id, text, imgsrc) {
 }
 
 function get_stash() {
-  stash.innerHTML = "";
-  let data = get_data("Inventory");
+  document.getElementById("stash").innerHTML = "";
+  let data = get_data(queries.stash);
   data.then((res) => {
     res.forEach((e) => {
       spawnNode("stash", JSON.stringify(e));
@@ -23,8 +24,8 @@ function get_stash() {
 }
 
 function get_loadout() {
-  inventory.innerHTML = "";
-  let data = get_data("LOADOUT");
+  document.getElementById("inventory").innerHTML = "";
+  let data = get_data(queries.loadout);
   data.then((res) => {
     let nodes = {
       shield: res["shield"],
@@ -52,23 +53,14 @@ function get_loadout() {
 }
 
 function change_bp() {
-  let key = "FortunaPass2_PremiumUnlock";
   let value = "false";
-  write_data(key, value)
+  write_data(queries.battlepass_status, value)
     .then(() => alert("changed battlepass"))
     .catch(() => alert("error when changing battlepass"));
 }
 
-function reset_children() {
-  const pages = ["inventory", "stash", "items"];
-  pages.forEach((key) => {
-    document.getElementById(key).innerHTML = "";
-  });
-}
-
 async function list_items() {
   document.getElementById("items").innerHTML = "";
-  // items.forEach((e) => {
   for (const e of items) {
     let image = e.image;
     if (image.includes("$RESOURCE")) {
@@ -81,16 +73,46 @@ async function list_items() {
   }
 }
 
+async function get_settings() {
+  document.getElementById("settings").innerHTML = "";
+  const needed_queries = [
+    "currency",
+    "battlepass_status",
+    "battlepass_level",
+    "korolev",
+    "ica",
+    "osiris",
+  ];
+  let object = {};
+  for (const query of needed_queries) {
+    let res = await get_data(queries[query]);
+    object[query] = res;
+    if (query === "currency") {
+      const balance = res;
+
+      spawnNode("settings", `Aurum: ${res.AU}`);
+      spawnNode("settings", `K-Marks: ${res.SC}`);
+      spawnNode("settings", `Insurance tokens: ${res.IN}`);
+      continue;
+    }
+    if (res > 100000) res = "definetly maxed out";
+    else res = `${res} xp`;
+    spawnNode("settings", `${query}: ${res}`);
+  }
+  // return object;
+}
+
 // allow modules to load to global scope
 // that means being able to use it in html & the javascript console
 const exports = [
   list_items,
-  change_bp,
+  // change_bp,
   get_stash,
   get_loadout,
-  reset_children,
   // items,
 ];
 for (const fn of exports) {
   globalThis[fn.name] = fn;
 }
+
+export { get_loadout, get_stash, get_settings };

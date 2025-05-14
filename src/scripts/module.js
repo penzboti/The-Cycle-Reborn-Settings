@@ -25,4 +25,15 @@ const items = await readTextFile("items.json", {
   return JSON.parse(data);
 });
 
-export { get_data, write_data, items };
+const queries = {
+  battlepass_status: "FortunaPass2_PremiumUnlock",
+  battlepass_level: "FortunaPass2_SeasonXp",
+  korolev: "FactionProgressionKorolev",
+  ica: "FactionProgressionICA",
+  osiris: "FactionProgressionOsiris",
+  loadout: "LOADOUT",
+  stash: "Inventory",
+  currency: "Balance",
+};
+
+export { get_data, write_data, items, queries };
