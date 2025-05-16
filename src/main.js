@@ -1,6 +1,14 @@
-import { get_data, write_data, items, queries } from "./scripts/module.js";
+import {
+  get_data,
+  write_data,
+  add_item,
+  items,
+  queries,
+} from "./scripts/module.js";
 const { convertFileSrc } = window.__TAURI__.core;
 const { resolveResource } = window.__TAURI__.path;
+// debug
+const { invoke } = window.__TAURI__.core;
 
 // will remove this later
 function spawnNode(id, text, imgsrc) {
@@ -59,8 +67,8 @@ function change_bp() {
     .catch(() => alert("error when changing battlepass"));
 }
 
-async function list_items() {
-  document.getElementById("items").innerHTML = "";
+async function list_items(id) {
+  document.getElementById(id).innerHTML = "";
   for (const e of items) {
     let image = e.image;
     if (image.includes("$RESOURCE")) {
@@ -69,7 +77,7 @@ async function list_items() {
       );
     }
 
-    spawnNode("items", `${e.name}: ${e.id} ${e.type}`, image);
+    spawnNode(id, `${e.name}: ${e.id} ${e.type}`, image);
   }
 }
 
@@ -102,6 +110,14 @@ async function get_settings() {
   // return object;
 }
 
+const get_items = [{ baseItemId: "WP_A_Pistol_Bullet_01", amount: 1, durability: -1 }];
+
+function debug_items() {
+  for (const item of get_items) {
+    add_item(item);
+  }
+}
+
 // allow modules to load to global scope
 // that means being able to use it in html & the javascript console
 const exports = [
@@ -110,9 +126,13 @@ const exports = [
   get_stash,
   get_loadout,
   // items,
+  add_item,
+  debug_items,
 ];
 for (const fn of exports) {
   globalThis[fn.name] = fn;
 }
+// debug
+// globalThis.item = item;
 
-export { get_loadout, get_stash, get_settings };
+export { get_loadout, get_stash, get_settings, add_item };

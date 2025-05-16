@@ -14,17 +14,27 @@ Editing The Cycle Reborn server data without you having to manually do it trough
 
 # will look into
 - skip tutorial (for new saves in save slot feature)
-- negative & really high durability for armor
-- positive durability to items
-- make unstackable items stacked
-- item id not a real item
-- overstack items
 - forge perks
 - attachments
+- bad json items, and other database values
 
 # findings
+- bad inventory json will correct itself (like deleting it netirely) (mabye not tho)
 ## items
-- itemid is just a string. if two items hold the same id only one of them apears.
+- itemid is just a string. it can be anything
+- if two items hold the same itemid only one of them apears.
+- unstackable items with modified ammounts cannot be split-stacked. so like two helmets in one cannot be split.
+- unknown items just don't appear
+- overstacking items is allowed
+- -1 amount makes items unequipable (with armors, even into their slots)
+## keycards
+- keycards with negative durability dont work
+- keycards with modified durability reset to normal when used (you still get +1 use out of it)
+## armour
+- -1 durability makes them unbreakable
+- you can make them really high rudability
+## weapons
+- durability doesnt change even when positive
 ## stash & inventory
 - anything in your inventory is also in your stash, but just left out of rendering & calculating
 - it writes your stash to the db if you get/buy something

@@ -19,6 +19,29 @@ async function write_data(key, value) {
   }
 }
 
+async function add_item(input_json) {
+  let json = {
+    itemId: "UUIDV4",
+    baseItemId: "",
+    primaryVanityId: 0,
+    secondaryVanityId: 0,
+    amount: 1,
+    durability: -1,
+    modData: { m: [] },
+    rolledPerks: [],
+    insurance: "",
+    insuranceOwnerPlayfabId: "",
+    insuredAttachmentId: "",
+    origin: { t: "", p: "", g: "" },
+  };
+  for (const key of Object.keys(input_json)) {
+    json[key] = input_json[key];
+  }
+  let string = JSON.stringify(json);
+  let res = await invoke("add_item", { json: string });
+  return res;
+}
+
 const items = await readTextFile("items.json", {
   baseDir: 11,
 }).then((data) => {
@@ -36,4 +59,4 @@ const queries = {
   currency: "Balance",
 };
 
-export { get_data, write_data, items, queries };
+export { get_data, write_data, add_item, items, queries };
