@@ -11,5 +11,8 @@
   "AI_HowlerSyrinx_02",
   "Data_DigSite",
   "HowlerGrenade_01",
-  "Map03_KeyCard_04_AlienCorridor"
+  "Map03_KeyCard_04_AlienCorridor",
+  "*Ammo",
+  "*Prototype",
+  "*Mk.II"
 ]

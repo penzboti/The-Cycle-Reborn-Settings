@@ -24,43 +24,59 @@
     "itemInfo": {}
   },
   {
-    "id": "Ammo_Light",
+    "id": "Light",
     "name": "Basic Light ammo",
     "type": "ammunition",
     "rarity": "Common",
-    "image": "https://cdn.wikimg.net/en/tcfwiki/images/thumb/0/05/Basic_Light_Ammo.png/24px-Basic_Light_Ammo.png",
+    "image": "png",
     "itemInfo": {}
   },
   {
-    "id": "Ammo_Medium",
+    "id": "Medium",
     "name": "Basic Medium ammo",
     "type": "ammunition",
     "rarity": "Common",
-    "image": "https://cdn.wikimg.net/en/tcfwiki/images/thumb/0/09/Basic_Medium_Ammo.png/36px-Basic_Medium_Ammo.png",
+    "image": "png",
     "itemInfo": {}
   },
   {
-    "id": "Ammo_Heavy",
+    "id": "Heavy",
     "name": "Basic Heavy ammo",
     "type": "ammunition",
-    "rarity": "Common",
-    "image": "https://cdn.wikimg.net/en/tcfwiki/images/thumb/0/0d/Basic_Heavy_Ammo.png/36px-Basic_Heavy_Ammo.png",
+    "rarity": "Uncommon",
+    "image": "png",
     "itemInfo": {}
   },
   {
-    "id": "Ammo_Shotgun",
+    "id": "Shotgun",
     "name": "Basic Shotgun ammo",
     "type": "ammunition",
-    "rarity": "Common",
-    "image": "https://cdn.wikimg.net/en/tcfwiki/images/thumb/0/0f/Basic_Shotgun_Ammo.png/36px-Basic_Shotgun_Ammo.png",
+    "rarity": "Uncommon",
+    "image": "png",
     "itemInfo": {}
   },
   {
-    "id": "Ammo_Special",
+    "id": "Special",
     "name": "Derelict Ammo",
     "type": "ammunition",
     "rarity": "Rare",
-    "image": "https://cdn.wikimg.net/en/tcfwiki/images/thumb/b/b0/Special_Ammo.png/36px-Special_Ammo.png",
+    "image": "png",
+    "itemInfo": {}
+  },
+  {
+    "id": "TOOL_MineralScanner_01",
+    "name": "Mineral Scanner",
+    "type": "tool",
+    "rarity": "Common",
+    "image": "png",
+    "itemInfo": {}
+  },
+  {
+    "id": "TOOL_Mining_01",
+    "name": "Heavy Mining Tool",
+    "type": "tool",
+    "rarity": "Common",
+    "image": "png",
     "itemInfo": {}
   }
 ]

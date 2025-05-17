@@ -17,9 +17,10 @@ Editing The Cycle Reborn server data without you having to manually do it trough
 - forge perks
 - attachments
 - bad json items, and other database values
+- cut out ammo images (they are bad screenshots currently)
 
 # findings
-- bad inventory json will correct itself (like deleting it netirely) (mabye not tho)
+- bad inventory json will correct itself (like deleting it entirely) (mabye not tho)
 ## items
 - itemid is just a string. it can be anything
 - if two items hold the same itemid only one of them apears.

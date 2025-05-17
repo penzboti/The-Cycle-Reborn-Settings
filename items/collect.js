@@ -35,8 +35,6 @@ const inPath = "./TCF-Information/";
 const outPath = "./result/items.json";
 
 const extraAdditionsPath = "./manual_add.json";
-// TODO: heavy mining tool & scanner
-// TODO: ammo images; screenshot in game
 const manualAdditions = JSON.parse(
   fs.readFileSync(extraAdditionsPath, {
     encoding: "utf8",
@@ -59,8 +57,8 @@ for (let image of fs.readdirSync("./manual_images/")) {
 }
 
 const extreRemovalsPath = "./manual_remove.json";
-// removing season 3, and not-item (they were in the list) items.
-// TODO: idk if tactical & resto gear are also s3 additions
+// removing season 3, and not-item (they were in the list) entries.
+// side note: tactical & resto gear are not s3 additions
 const manualRemovals = JSON.parse(
   fs.readFileSync(extreRemovalsPath, {
     encoding: "utf8",
@@ -122,7 +120,6 @@ for (const fileName of neededFiles) {
 
   const type = fileName.replace("s.json", "").toLowerCase();
 
-  // for (const id of [""]) {
   for (const id of Object.keys(object)) {
     const item = object[id];
     const name = item.inGameName;
@@ -131,16 +128,21 @@ for (const fileName of neededFiles) {
 
     // removing unnecessary items
     if (manualRemovals.includes(id) || manualRemovals.includes(name)) continue;
+    manualRemovals
+      .filter((e) => e.includes("*"))
+      .forEach((e) => {
+        let removeText = e.replace("*", "");
+        if (id.includes(removeText) || name.includes(removeText)) {
+          // i think its awful i had to do it this way
+          itemInfo.skip = "true";
+        }
+      });
+    if (itemInfo.skip) continue;
+
+    // then all items not removed are being worked on
+    console.log(`${id} \t\t ${name}`);
 
     switch (type) {
-      // mass removing unnecessary items
-      // TODO: do it in string in json, then split and use it here
-      case "material":
-        if (name.includes("ammo") || name.includes("Ammo")) continue;
-        break;
-      case "weapon":
-        if (name.includes("Prototype") || name.includes("Mk.II")) continue;
-        break;
       // adding itemInfo
       case "attachment":
         itemInfo = {
@@ -148,9 +150,6 @@ for (const fileName of neededFiles) {
         };
         break;
     }
-
-    // then all items not removed are being worked on
-    console.log(`${id} \t\t ${name}`);
 
     const underscore = name.replaceAll(" ", "_");
     let image = imageItems.includes(id)

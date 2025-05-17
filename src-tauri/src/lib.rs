@@ -37,15 +37,15 @@ fn write_data(key: String, value: String) -> bool {
 
 #[tauri::command]
 fn add_item(mut json: String) -> (bool, String) {
-    println!("{}", json);
+    // println!("{}", json);
     const KEY: &str = "Inventory";
     let mut inv_str = get_data(KEY.to_owned());
-    println!("{}", inv_str);
+    // println!("{}", inv_str);
 
     let id: String = uuid::Uuid::new_v4().as_u128().to_string();
-    println!("{}", id);
+    // println!("{}", id);
     json = json.replace("UUIDV4", format!("TCRS{}", id.as_str()).as_str());
-    println!("{}", json);
+    println!("Adding: {}", json);
 
     let checkchar: char = inv_str.chars().nth(1).unwrap();
     if checkchar == '{' {
@@ -55,7 +55,7 @@ fn add_item(mut json: String) -> (bool, String) {
         inv_str.insert(1, c);
     }
 
-    println!("{}", inv_str);
+    // println!("{}", inv_str);
     let res = write_data(KEY.to_owned(), inv_str.to_owned());
     (res, id)
 }
