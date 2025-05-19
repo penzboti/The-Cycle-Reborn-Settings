@@ -2,6 +2,7 @@ import {
   get_data,
   write_data,
   add_item,
+  remove_item,
   items,
   queries,
 } from "./scripts/module.js";
@@ -10,7 +11,7 @@ const { resolveResource } = window.__TAURI__.path;
 // debug
 const { invoke } = window.__TAURI__.core;
 
-// will remove this later
+// will remove this later, or simplify it?
 function spawnNode(id, text, imgsrc) {
   let node = document.createElement("div");
   node.innerText = text;
@@ -60,6 +61,7 @@ function get_loadout() {
   });
 }
 
+// will remove this
 function change_bp() {
   let value = "false";
   write_data(queries.battlepass_status, value)
@@ -67,6 +69,7 @@ function change_bp() {
     .catch(() => alert("error when changing battlepass"));
 }
 
+// currently debug, but we'll use it for real when we search for items
 async function list_items(id) {
   document.getElementById(id).innerHTML = "";
   for (const e of items) {
@@ -107,10 +110,11 @@ async function get_settings() {
     else res = `${res} xp`;
     spawnNode("settings", `${query}: ${res}`);
   }
-  // return object;
 }
 
-const get_items = [{ baseItemId: "WP_A_Pistol_Bullet_01", amount: 1, durability: -1 }];
+const get_items = [
+  { baseItemId: "WP_A_Pistol_Bullet_01", amount: 1, durability: -1 },
+];
 
 function debug_items() {
   for (const item of get_items) {
@@ -128,11 +132,21 @@ const exports = [
   // items,
   add_item,
   debug_items,
+  remove_item,
 ];
-for (const fn of exports) {
-  globalThis[fn.name] = fn;
+for (const item of exports) {
+  // if (typeof item) {
+  globalThis[item.name] = item;
+  // console.log(`${item}`)
+  // globalThis[] = item;
+  // } else {
+  // globalThis[] = item;
+  // }
 }
 // debug
 // globalThis.item = item;
 
-export { get_loadout, get_stash, get_settings, add_item };
+// we can import stuff in html script (when module) tag
+// TODO: ill probably move each implementation of this file to their separate pages
+// unless doing some more background stuff
+export { get_loadout, get_stash, get_settings, add_item, remove_item };

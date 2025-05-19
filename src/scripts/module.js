@@ -20,15 +20,17 @@ async function write_data(key, value) {
 }
 
 async function add_item(input_json) {
+  // TODO: expeirment with removing some of these, and see if they work
   let json = {
     itemId: "UUIDV4",
     baseItemId: "",
-    primaryVanityId: 0,
-    secondaryVanityId: 0,
     amount: 1,
     durability: -1,
-    modData: { m: [] },
     rolledPerks: [],
+    modData: { m: [] },
+    // these ones we will probably never use
+    primaryVanityId: 0,
+    secondaryVanityId: 0,
     insurance: "",
     insuranceOwnerPlayfabId: "",
     insuredAttachmentId: "",
@@ -39,7 +41,20 @@ async function add_item(input_json) {
   }
   let string = JSON.stringify(json);
   let res = await invoke("add_item", { json: string });
-  return res;
+  if (res[0] === false) {
+    return Promise.reject(res[1]);
+  } else {
+    return Promise.resolve(res[1]);
+  }
+}
+
+async function remove_item(id) {
+  let res = await invoke("remove_item", { id });
+  if (res === false) {
+    return Promise.reject();
+  } else {
+    return Promise.resolve();
+  }
 }
 
 const items = await readTextFile("items.json", {
@@ -59,4 +74,6 @@ const queries = {
   currency: "Balance",
 };
 
-export { get_data, write_data, add_item, items, queries };
+// TODO: durability map (excluding keys, i cant be bothered)
+
+export { get_data, write_data, add_item, remove_item, items, queries };
