@@ -1,5 +1,5 @@
 [package]
-name = "the-cycle-reborn-settings"
+name = "cycle-reborn-settings"
 version = "0.1.0"
 description = "A Tauri App"
 authors = ["you"]

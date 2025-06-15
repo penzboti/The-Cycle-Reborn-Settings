@@ -724,6 +724,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "cycle-reborn-settings"
+version = "0.1.0"
+dependencies = [
+ "lazy_static",
+ "mongodb",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-fs",
+ "tauri-plugin-opener",
+ "uuid",
+]
+
+[[package]]
 name = "darling"
 version = "0.20.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4303,21 +4318,6 @@ dependencies = [
  "futf",
  "mac",
  "utf-8",
-]
-
-[[package]]
-name = "the-cycle-reborn-settings"
-version = "0.1.0"
-dependencies = [
- "lazy_static",
- "mongodb",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "tauri-plugin-fs",
- "tauri-plugin-opener",
- "uuid",
 ]
 
 [[package]]

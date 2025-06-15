@@ -1,7 +1,7 @@
 # info
 Editing The Cycle Reborn server data without you having to manually do it trough MongoDB Compass.
 
-# what should i expect
+# what should you expect
 - be able to edit
     - stash (this means adding and removing items)
     - currency
@@ -9,15 +9,22 @@ Editing The Cycle Reborn server data without you having to manually do it trough
 - be able to max out this way
     - faction (points) progress
     - fortuna pass progress
-- save slots - (most probably) in one you can play the game normally and in the others you can have the funnest fun
 - custom kits (that you make) you can apply with a click
 
+# currently
+well, nothing, this migrating to react really killed all the features.
+
 # will look into
-- skip tutorial (for new saves in save slot feature)
 - forge perks
 - attachments
 - bad json items, and other database values
 - cut out ammo images (they are bad screenshots currently)
+- save slots - in one you can play the game normally and in the others you can have the funnest fun
+    - might not happen, would be cool
+    - skip tutorial (for new saves in save slot feature)
+
+# links
+[stack](docs/stack.md)
 
 # findings
 - bad inventory json will correct itself (like deleting it entirely) (mabye not tho)
