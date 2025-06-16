@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"] // i dont think this works dawg; Q: are comments allowed here?
+    }
+  }
+}
