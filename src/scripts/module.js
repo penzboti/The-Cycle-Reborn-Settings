@@ -1,5 +1,5 @@
-const { invoke } = window.__TAURI__.core;
-const { readTextFile } = window.__TAURI__.fs;
+import { invoke } from "@tauri-apps/api/core";
+import { readTextFile } from "@tauri-apps/plugin-fs";
 
 async function get_data(key) {
   let res = await invoke("get_data", { key });

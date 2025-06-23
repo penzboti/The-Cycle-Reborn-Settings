@@ -35,8 +35,15 @@ extra information found while experimenting & extra feature ideas
 how to make a save file and load another one
 
 # run
-```npm run tauri dev```
+Install dependencies, and then
+```bash
+npm run tauri dev
+```
 ## install dependencies
-```npm install``` should do the trick
+you require NodeJs and Rust to be installed.
+Then
+```bash
+npm install
+```
 ## build release
 what i will have to look into is sharing the executable somehow
