@@ -25,11 +25,30 @@ function Menu() {
   return (
     <NavigationMenu>
       <NavigationMenuList>
+        <NavigationMenuItem>
+          <NavigationMenuTrigger>Test</NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <ul className="grid w-[200px] gap-4">
+              <li>
+                <NavigationMenuLink asChild>
+                  <NavLink to="/kits">Kits</NavLink>
+                </NavigationMenuLink>
+                <NavigationMenuLink asChild>
+                  <NavLink to="/kits/edit">Edit</NavLink>
+                </NavigationMenuLink>
+              </li>
+              <li>
+                <NavigationMenuLink asChild>
+                  <NavLink to="/kits">Kits 2</NavLink>
+                </NavigationMenuLink>
+              </li>
+            </ul>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
         <MenuItem to="/">Home</MenuItem>
         <MenuItem to="/stash">Stash</MenuItem>
-        <MenuItem to="/inventory">Inventory</MenuItem>
+        <MenuItem to="/loadout">Loadout</MenuItem>
         <MenuItem to="/settings">Settings</MenuItem>
-        <MenuItem to="/kits">Kits</MenuItem>
       </NavigationMenuList>
     </NavigationMenu>
   );
