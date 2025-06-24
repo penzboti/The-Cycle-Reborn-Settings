@@ -10,9 +10,12 @@ function Test() {
 
   function displayItems() {
     updateElement(items.map(item => (
-    <p
+      <p
         key={item.id}
-      >{item.name}</p>
+      >
+        <img src={item.image} className="w-20" />
+        {item.name}
+      </p>
     )));
   }
 

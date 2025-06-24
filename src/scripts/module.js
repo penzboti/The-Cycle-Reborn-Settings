@@ -1,5 +1,6 @@
-import { invoke } from "@tauri-apps/api/core";
+import { invoke, convertFileSrc } from "@tauri-apps/api/core";
 import { readTextFile } from "@tauri-apps/plugin-fs";
+import { resolveResource } from "@tauri-apps/api/path";
 
 async function get_data(key) {
   let res = await invoke("get_data", { key });
@@ -58,9 +59,18 @@ async function remove_item(id) {
 }
 
 const items = await readTextFile("items.json", {
-  baseDir: 11,
+  baseDir: 11, // this just means the resource folder
 }).then((data) => {
   return JSON.parse(data);
+}).then((data) => {
+  data.map(async (item) => {
+    let image = item.image;
+    image = await resolveResource(image.replace("$RESOURCE/", "")) // Q: remove the resource prefix?
+    image = convertFileSrc(image);
+    item.image = image;
+    return item;
+  });
+  return data;
 });
 
 const queries = {
