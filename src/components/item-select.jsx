@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react"
-import { cn } from "../lib/utils"
-import { Button } from "./ui/button";
+import { cn } from "./ui/lib/utils" // was @/lib/utils
+import { Button } from "./ui/button"; // was @/components/ui/button
 import {
   Command,
   CommandEmpty,
@@ -39,17 +39,18 @@ function ItemSelect() {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[300px] justify-start"
+          className="w-[300px] justify-between"
         >
-          { selectedItem() }
+          {selectedItem()}
+          <ChevronsUpDown />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command filter={(value, search, keywords) => {
-    const extendValue = value + ' ' + keywords.join(' ')
-    if (extendValue.includes(search)) return 1
-    return 0
-  }}>
+          const extendValue = value + ' ' + keywords.join(' ')
+          if (extendValue.includes(search)) return 1
+          return 0
+        }}>
           <CommandInput placeholder="Search item..." className="h-9" />
           <CommandList>
             <CommandEmpty>No item found.</CommandEmpty>

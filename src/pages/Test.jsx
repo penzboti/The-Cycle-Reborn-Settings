@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import { items } from "../scripts/module";
 
 import { Separator } from "../components/ui/separator"; // was @/components/ui/separator
-import { Button } from "../components/ui/button";
+import { Button } from "../components/ui/button"; // was @/components/ui/button
 
 import ItemSelect from "../components/item-select";
 
