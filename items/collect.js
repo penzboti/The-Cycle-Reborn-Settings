@@ -1,8 +1,11 @@
 import fs from "fs";
 import * as cheerio from "cheerio";
 import * as client from "https";
+import process from "process";
 
 // uses the github repo TCF-Wiki/TCF-Information
+// make sure you have the repo cloned in the TCF-Information repo
+// i have a public fork if it gets taken down
 const neededFiles = [
   "attachments.json",
   "backpacks.json",
@@ -16,6 +19,8 @@ const neededFiles = [
   // in fact, there is one left out of it: PlayerDefault, which we dont need,
   // but now all the items are nicely categorized
 ];
+
+if (!process.cwd().includes("items")) process.chdir("./items");
 
 // all downloaded images
 const imageItems = fs
@@ -59,6 +64,7 @@ for (let image of fs.readdirSync("./manual_images/")) {
 const extreRemovalsPath = "./manual_remove.json";
 // removing season 3, and not-item (they were in the list) entries.
 // side note: tactical & resto gear are not s3 additions
+// TODO: https://thecyclefrontier.wiki/w/index.php?title=Keycards&oldid=14547 keycards in s2; they have been changed to s3
 const manualRemovals = JSON.parse(
   fs.readFileSync(extreRemovalsPath, {
     encoding: "utf8",
