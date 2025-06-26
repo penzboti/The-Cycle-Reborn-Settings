@@ -60,18 +60,20 @@ async function remove_item(id) {
 
 const items = await readTextFile("items.json", {
   baseDir: 11, // this just means the resource folder
-}).then((data) => {
-  return JSON.parse(data);
-}).then((data) => {
-  data.map(async (item) => {
-    let image = item.image;
-    image = await resolveResource(image.replace("$RESOURCE/", "")) // Q: remove the resource prefix?
-    image = convertFileSrc(image);
-    item.image = image;
-    return item;
+})
+  .then((data) => {
+    return JSON.parse(data);
+  })
+  .then((data) => {
+    data.map(async (item) => {
+      let image = item.image;
+      image = await resolveResource(image.replace("$RESOURCE/", "")); // Q: remove the resource prefix?
+      image = convertFileSrc(image);
+      item.image = image;
+      return item;
+    });
+    return data;
   });
-  return data;
-});
 
 const queries = {
   battlepass_status: "FortunaPass2_PremiumUnlock",
@@ -84,6 +86,23 @@ const queries = {
   currency: "Balance",
 };
 
+const itemData = {
+  uuid: "itemId",
+  id: "baseItemId",
+  amount: "amount",
+  durability: "durability",
+  perks: "rolledPerks",
+  modData: "modData", // TODO: i have not used this yet
+};
+
 // TODO: durability map (excluding keys, i cant be bothered)
 
-export { get_data, write_data, add_item, remove_item, items, queries };
+export {
+  get_data,
+  write_data,
+  add_item,
+  remove_item,
+  items,
+  queries,
+  itemData,
+};
