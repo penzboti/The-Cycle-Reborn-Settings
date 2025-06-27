@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { queries, get_data } from "../scripts/module";
+import { queries, get_data, itemData } from "../scripts/module";
 
 import Item from "../components/item";
 import RefreshButton from "../components/refresh";
@@ -8,9 +8,13 @@ function Stash() {
   const [stash, updateStash] = useState([]);
 
   async function loadStash() {
-    let res = await get_data(queries.stash);
-    updateStash(res);
+    let stash = await get_data(queries.stash);
+    if (typeof stash === "undefined") {
+      console.log("error getting stash");
+      return;
+    }
     console.log("stash", stash);
+    updateStash(stash);
   }
 
   // only runs on initial load
@@ -28,7 +32,7 @@ function Stash() {
 
       {stash.map((item) => {
         return (
-          <Item item={item} />
+          <Item item={item} key={item[itemData.uuid]} />
         );
       })}
     </>
