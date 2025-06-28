@@ -22,7 +22,6 @@ function Loadout() {
     // could these two be loaded at the same time?
     let stash = await get_data(queries.stash);
     let nodes = await get_data(queries.loadout);
-    console.log(0, stash, nodes);
     if (typeof stash === "undefined" || typeof nodes === "undefined") {
       console.log("error getting loadout");
       return;
@@ -95,7 +94,6 @@ function Loadout() {
         })}
       {separateMap.map(key => {
         let container = loadout[key];
-        console.log(container);
         return (
           <div
             key={key}
