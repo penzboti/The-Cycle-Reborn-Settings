@@ -119,13 +119,26 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  h1 {
+    @apply scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance;
+  }
+  h2 {
+    @apply scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0;
+  }
+  h3 {
+    @apply scroll-m-20 text-2xl font-semibold tracking-tight;
+  }
+  /* p { */
+  /*   @apply leading-7 [&:not(:first-child)]:mt-6; */
+  /* } */
 }
 
 /* menubar active */
-a.active {
-  background-color: var(--color-primary);
-  color: var(--color-primary-foreground);
-}
+/* a.active { */
+/*   background-color: var(--color-primary); */
+/*   color: var(--color-primary-foreground); */
+/* } */
 a {
-  transition: all .5s ease;
+  transition: all 0.5s ease;
 }
