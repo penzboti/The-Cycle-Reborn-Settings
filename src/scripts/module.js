@@ -84,6 +84,7 @@ const queries = {
   loadout: "LOADOUT",
   stash: "Inventory",
   currency: "Balance",
+  contracts: "ContractsOneTimeCompleted",
 };
 
 const itemData = {

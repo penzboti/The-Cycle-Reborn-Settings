@@ -6,8 +6,6 @@ desktop application builder
 frontend build tool
 ## React
 ui library
-
-Not full migration.
 ## Shadcn / ui
 component library for react.
 

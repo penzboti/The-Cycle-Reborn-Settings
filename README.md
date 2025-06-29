@@ -9,11 +9,12 @@ Editing The Cycle Reborn server data without you having to manually do it trough
 - be able to max out this way
     - faction (points) progress
     - fortuna pass progress
+- be able to unlock maps
 - custom kits (that you make) you can apply with a click
 
 # currently
-Well, nothing, this migrating to react really killed all the features.
-The features were just the bare minimum tho, so i can get back to that state in no time.
+able to see stash, loadout, see settings;
+not able to edit anything yet.
 
 # will look into
 - forge perks (in tcf-information: forgePerks.json, these could also be useful: forgeSettings, forgeRecipies) (100% in scope)
@@ -33,6 +34,9 @@ extra information found while experimenting & extra feature ideas
 
 [saving](docs/saving.md):
 how to make a save file and load another one
+
+[missions](docs/missons.md):
+the two locked maps need to be unlocked with missions (= contracts = quests).
 
 # run
 Install dependencies, and then
