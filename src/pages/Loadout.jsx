@@ -100,7 +100,7 @@ function Loadout() {
           >
             <h2>{text[key]}</h2>
             {container.length === 0 ? "empty" :
-              container.map(item => <Item item={item} />)
+              container.map(item => <Item key={item[itemData.uuid]} item={item} />)
             }
           </div>
         );

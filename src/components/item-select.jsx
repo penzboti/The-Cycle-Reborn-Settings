@@ -18,9 +18,12 @@ import {
 
 import { items } from "../scripts/module";
 
-function ItemSelect() {
+function ItemSelect({ set }) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
+  if (typeof set !== "undefined") {
+    set(value);
+  }
 
   function selectedItem() {
     if (!value) return "Select item...";
