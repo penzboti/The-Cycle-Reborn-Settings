@@ -48,6 +48,7 @@ function Loadout() {
 
     separateMap.forEach(key => {
       let container = loadout[key];
+      if (typeof container === "undefined") container = [];
       container = container.map(id => {
         let item = stash.find(item => item[itemData.uuid] == id);
         return item;

@@ -31,6 +31,7 @@ function getLoadoutIds(nodes) {
 
   separateMap.forEach(key => {
     let container = loadout[key];
+    if (typeof container === "undefined") container = [];
     ids = [...ids, ...container];
   });
   return ids;

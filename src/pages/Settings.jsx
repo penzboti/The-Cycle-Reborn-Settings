@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { queries, get_data } from "../scripts/module";
+import { queries, get_data, write_data } from "../scripts/module";
+import { Button } from "../components/ui/button";
 
 import RefreshButton from "../components/refresh";
+import { toast } from "sonner";
 
 const needed_queries = [
   "currency",
@@ -27,6 +29,14 @@ const currencytext = {
   SC: "k-marks"
 };
 
+const toastsettings = {
+  duration: 2000,
+  position: "bottom-left",
+  cancel: {
+    label: 'Close',
+  },
+}
+
 function Settings() {
   const [settings, updateSettings] = useState({});
 
@@ -44,6 +54,28 @@ function Settings() {
     updateSettings(data);
   }
 
+  function updateSetting(setting) {
+    const current = settings[setting];
+    let newData;
+    if (["osiris", "battlepass_level", "korolev", "ica", "osiris"].includes(setting)) newData = current !== 1000000 ? 1000000 : 0;
+    if (setting === "battlepass_status") newData = !current;
+    if (setting === "currency") newData = current;
+    if (setting === "currency") newData = JSON.stringify(newData);
+    let string = "" + newData;
+    console.log(setting, current, newData, string);
+    let query = queries[setting];
+
+    write_data(query, string).then(() => {
+      toast("success", toastsettings);
+      get_data(query).then(data => {
+        let snap = settings;
+        snap[setting] = data;
+        updateSettings({ ...snap });
+        console.log(snap, settings);
+      });
+    }).catch(() => toast.error("there was an error", toastsettings));
+  }
+
   useEffect(() => {
     getSettings();
   }, []);
@@ -54,10 +86,19 @@ function Settings() {
     var currencies = Object.keys(obj).map(key => {
       let text = currencytext[key];
       let number = obj[key];
+      // <p>{number}</p>
       return (
         <div key={text}>
           <h3>{text}</h3>
-          <p>{number}</p>
+          <input type="number" value={number}
+            onChange={e => {
+              let value = e.target.valueAsNumber
+              console.log(value);
+              let snap = settings;
+              snap["currency"][key] = value;
+              updateSettings({ ...snap });
+            }}
+          />
         </div>
       )
     });
@@ -75,6 +116,7 @@ function Settings() {
           <div>
             <h2>{text[0]}</h2>
             {currencies}
+            <Button onClick={() => updateSetting("currency")}>update</Button>
           </div>
           : <></>
       }
@@ -90,6 +132,7 @@ function Settings() {
               <div key={key}>
                 <h2>{header}</h2>
                 <p>{JSON.stringify(obj)}</p>
+                <Button onClick={() => updateSetting(key)}>toggle</Button>
               </div>
             );
           })
