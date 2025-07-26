@@ -15,7 +15,7 @@ function Item({
       <p>{item[itemData.id]}</p>
       <p>{elem.name}</p>
       <p>amount: {item[itemData.amount]}</p>
-      <p>{item[itemData.durability]}</p>
+      <p>durability: {item[itemData.durability]}</p>
     </div>
   );
 }
