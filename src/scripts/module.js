@@ -58,6 +58,17 @@ async function remove_item(id) {
   }
 }
 
+// TODO: remove item from slot (not a new function bc its too boilerplate)
+async function equip_item(slot, id) {
+  let res = await invoke("equip_item", { id, slot });
+  console.log(res);
+  if (res === false) {
+    return Promise.reject();
+  } else {
+    return Promise.resolve();
+  }
+}
+
 const items = await readTextFile("items.json", {
   baseDir: 11, // this just means the resource folder
 })

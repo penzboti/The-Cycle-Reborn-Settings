@@ -2,7 +2,7 @@ use mongodb::{
     bson::{doc, Document},
     sync::{Client, Collection, Database},
 };
-// use serde_json::{from_str, to_string, Map, Value};
+use serde_json::Value;
 
 const URI: &str = "mongodb://localhost:27017";
 lazy_static::lazy_static! {
@@ -13,6 +13,7 @@ lazy_static::lazy_static! {
 
 #[tauri::command]
 fn get_data(key: String) -> String {
+    // println!("Getting: {}", key);
     // Q: returning errors at all?
     let entry = settings
         .find_one(doc! { "Key": key })
@@ -25,6 +26,7 @@ fn get_data(key: String) -> String {
 
 #[tauri::command]
 fn write_data(key: String, value: String) -> bool {
+    // println!("Writing: {}", key);
     let filter_doc = doc! { "Key": key };
     let update_doc = doc! {
         "$set": doc! { "Value": value }
@@ -36,13 +38,10 @@ fn write_data(key: String, value: String) -> bool {
 
 #[tauri::command]
 fn add_item(mut json: String) -> (bool, String) {
-    // println!("{}", json);
     const KEY: &str = "Inventory";
     let mut inv_str = get_data(KEY.to_owned());
-    // println!("{}", inv_str);
 
     let id: String = uuid::Uuid::new_v4().as_u128().to_string();
-    // println!("{}", id);
     json = json.replace("UUIDV4", format!("TCRS{}", id.as_str()).as_str());
     println!("Adding: {}", json);
 
@@ -54,17 +53,16 @@ fn add_item(mut json: String) -> (bool, String) {
         inv_str.insert(1, c);
     }
 
-    // println!("{}", inv_str);
     let res = write_data(KEY.to_owned(), inv_str.to_owned());
     (res, id)
 }
 
 #[tauri::command]
 fn remove_item(id: String) -> bool {
+    println!("Removing: {}", id);
     const KEY: &str = "Inventory";
     let mut inv_str = get_data(KEY.to_owned());
     let initial_inv = inv_str.clone();
-    // println!("{}", inv_str);
 
     // remove first 2 and last 2 characters to not interfere
     // this means: "[{" & "}]"
@@ -74,7 +72,6 @@ fn remove_item(id: String) -> bool {
     iter.next_back();
     iter.next_back();
     inv_str = iter.as_str().to_owned();
-    // println!("{}", inv_str);
 
     // now we can go item by item normally
     inv_str = inv_str
@@ -83,7 +80,6 @@ fn remove_item(id: String) -> bool {
         .filter(|x| !x.contains(id.as_str()))
         .collect::<Vec<&str>>()
         .join("},{");
-    // println!("'{}', {}", inv_str, inv_str.len());
     // if there are no items left we dont need the extra curly braces
     if inv_str != "" {
         inv_str.insert(0, '{');
@@ -91,8 +87,6 @@ fn remove_item(id: String) -> bool {
     }
     inv_str.insert(0, '[');
     inv_str.insert(inv_str.len(), ']');
-
-    // println!("{}", inv_str);
 
     // TODO: custom error codes https://github.com/tauri-apps/tauri/discussions/6952
     if initial_inv == inv_str {
@@ -102,8 +96,42 @@ fn remove_item(id: String) -> bool {
     res
 }
 
+#[tauri::command]
+fn equip_item(id: String, slot: String) -> bool {
+    println!("Equipping: {} into {}", id.clone(), slot.clone());
+    const KEY: &str = "LOADOUT";
+    let mut loadout_str = get_data(KEY.to_owned());
+    let mut json: Value = serde_json::from_str(&loadout_str.as_str()).unwrap();
+
+    if vec!["shield", "helmet", "weaponOne", "weaponTwo", "bag"].contains(&slot.as_str()) {
+        if let Some(data) = json.get_mut(slot.clone()) {
+            *data = Value::String(id.clone());
+        }
+    } else {
+        if let Some(data) = json.get_mut(slot.clone()) {
+            let string = data.as_str().unwrap();
+            let mut container: Value = serde_json::from_str(&string).unwrap();
+
+            if let Some(value) = container.get_mut("m_bagItemsIds") {
+                let mut array = value.as_array().unwrap().clone();
+                array.push(Value::String(id));
+                *value = Value::Array(array);
+            }
+
+            let after_string = serde_json::to_string(&container).unwrap();
+            *data = Value::String(after_string);
+        }
+    }
+
+    loadout_str = serde_json::to_string(&json).unwrap();
+    let replaced_string = loadout_str.replace("\\\"", "\\u0022");
+
+    let res = write_data(KEY.to_owned(), replaced_string.to_owned());
+    res
+}
+
 // so if im not using mobile, i dont have to have these here?
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
+// #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_fs::init())
@@ -112,7 +140,8 @@ pub fn run() {
             get_data,
             write_data,
             add_item,
-            remove_item
+            remove_item,
+            equip_item
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
