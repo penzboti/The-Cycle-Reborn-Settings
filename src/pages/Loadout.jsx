@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { get_data, queries, itemData } from "../scripts/module";
 
 import Item from "../components/item";
@@ -81,7 +81,7 @@ function Loadout() {
               <p>not found</p>
             </>
             : <>
-              <Item item={item} />
+              <Item item={item} slot={key} reload={loadLoadout} />
             </>;
 
           return (
@@ -101,7 +101,7 @@ function Loadout() {
           >
             <h2>{text[key]}</h2>
             {container.length === 0 ? "empty" :
-              container.map(item => <Item key={item[itemData.uuid]} item={item} />)
+              container.map(item => <Item key={item[itemData.uuid]} slot={key + "AsJsonStr"} reload={loadLoadout} item={item} />)
             }
           </div>
         );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { queries, get_data, itemData } from "../scripts/module";
 
 import Item from "../components/item";
@@ -68,7 +68,7 @@ function Stash() {
 
       {stash.map((item) => {
         return (
-          <Item item={item} key={item[itemData.uuid]} />
+          <Item item={item} slot="stash" reload={loadStash} key={item[itemData.uuid]} />
         );
       })}
     </>

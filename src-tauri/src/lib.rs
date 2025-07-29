@@ -97,7 +97,7 @@ fn remove_item(id: String) -> bool {
 }
 
 #[tauri::command]
-fn equip_item(id: String, slot: String) -> bool {
+fn equip_item(id: String, slot: String, remove: bool) -> bool {
     println!("Equipping: {} into {}", id.clone(), slot.clone());
     const KEY: &str = "LOADOUT";
     let mut loadout_str = get_data(KEY.to_owned());
@@ -105,7 +105,8 @@ fn equip_item(id: String, slot: String) -> bool {
 
     if vec!["shield", "helmet", "weaponOne", "weaponTwo", "bag"].contains(&slot.as_str()) {
         if let Some(data) = json.get_mut(slot.clone()) {
-            *data = Value::String(id.clone());
+            let string = if !remove { id.clone() } else { "".to_owned() };
+            *data = Value::String(string);
         }
     } else {
         if let Some(data) = json.get_mut(slot.clone()) {
@@ -114,7 +115,16 @@ fn equip_item(id: String, slot: String) -> bool {
 
             if let Some(value) = container.get_mut("m_bagItemsIds") {
                 let mut array = value.as_array().unwrap().clone();
-                array.push(Value::String(id));
+                if !remove {
+                    array.push(Value::String(id));
+                } else {
+                    array = array
+                        .clone()
+                        .iter()
+                        .filter(|&s| s != &Value::String(id.clone()))
+                        .map(|x| x.clone())
+                        .collect();
+                }
                 *value = Value::Array(array);
             }
 

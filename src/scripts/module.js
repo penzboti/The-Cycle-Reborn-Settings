@@ -58,9 +58,9 @@ async function remove_item(id) {
   }
 }
 
-// TODO: remove item from slot (not a new function bc its too boilerplate)
-async function equip_item(slot, id) {
-  let res = await invoke("equip_item", { id, slot });
+async function equip_item(slot, id, remove) {
+  if (typeof remove === "undefined") remove = false;
+  let res = await invoke("equip_item", { id, slot, remove });
   console.log(res);
   if (res === false) {
     return Promise.reject();
@@ -114,6 +114,7 @@ export {
   write_data,
   add_item,
   remove_item,
+  equip_item,
   items,
   queries,
   itemData,
