@@ -41,8 +41,9 @@ fn add_item(mut json: String) -> (bool, String) {
     const KEY: &str = "Inventory";
     let mut inv_str = get_data(KEY.to_owned());
 
-    let id: String = uuid::Uuid::new_v4().as_u128().to_string();
-    json = json.replace("UUIDV4", format!("TCRS{}", id.as_str()).as_str());
+    let uuid: String = uuid::Uuid::new_v4().as_u128().to_string();
+    let id: String = format!("TCRS{}", uuid.as_str());
+    json = json.replace("UUIDV4", id.as_str());
     println!("Adding: {}", json);
 
     let checkchar: char = inv_str.chars().nth(1).unwrap();

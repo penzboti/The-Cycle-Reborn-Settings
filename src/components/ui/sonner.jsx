@@ -1,6 +1,14 @@
 import { useTheme } from "next-themes"
 import { Toaster as Sonner } from "sonner";
 
+const settings = {
+  duration: 2000,
+  position: "bottom-left",
+  cancel: {
+    label: 'Close',
+  },
+}
+
 const Toaster = ({
   ...props
 }) => {
@@ -21,4 +29,4 @@ const Toaster = ({
   );
 }
 
-export { Toaster }
+export { Toaster, settings as toastsettings }

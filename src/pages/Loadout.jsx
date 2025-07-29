@@ -3,6 +3,7 @@ import { get_data, queries, itemData } from "../scripts/module";
 
 import Item from "../components/item";
 import RefreshButton from "../components/refresh";
+import AddPopup from "../components/add-popup";
 
 const text = {
   shield: "Shield: ",
@@ -78,9 +79,11 @@ function Loadout() {
           let foundItem = typeof item === "undefined";
           let content = foundItem
             ? <>
+              <AddPopup slot={key} reload={loadLoadout} />
               <p>not found</p>
             </>
             : <>
+              <AddPopup slot={key} reload={loadLoadout} />
               <Item item={item} slot={key} reload={loadLoadout} />
             </>;
 
@@ -100,6 +103,7 @@ function Loadout() {
             key={key}
           >
             <h2>{text[key]}</h2>
+            <AddPopup slot={key + "AsJsonStr"} reload={loadLoadout} />
             {container.length === 0 ? "empty" :
               container.map(item => <Item key={item[itemData.uuid]} slot={key + "AsJsonStr"} reload={loadLoadout} item={item} />)
             }

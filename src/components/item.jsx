@@ -13,14 +13,9 @@ function Item({
   if (typeof elem === "undefined") console.log("not a real item", item);
   let fn = () => {
     console.log("equip", slot);
-    if (slot !== "stash") {
-      equip_item(slot, uuid, true);
-    }
+    if (slot !== "stash") equip_item(slot, uuid, true);
     remove_item(uuid);
-    if (typeof reload !== "undefined") {
-      console.log("a reload", reload);
-      reload();
-    }
+    if (typeof reload !== "undefined") reload();
   }
   return (
     <div

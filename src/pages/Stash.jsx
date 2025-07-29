@@ -3,6 +3,7 @@ import { queries, get_data, itemData } from "../scripts/module";
 
 import Item from "../components/item";
 import RefreshButton from "../components/refresh";
+import AddPopup from "../components/add-popup";
 
 const separateMap = ["bagItems", "safeItems"];
 
@@ -65,6 +66,7 @@ function Stash() {
       <h1>Stash</h1>
 
       <RefreshButton fn={loadStash} />
+      <AddPopup slot="stash" reload={loadStash} />
 
       {stash.map((item) => {
         return (
