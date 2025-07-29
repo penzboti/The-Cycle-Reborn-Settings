@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react"
 import { cn } from "./ui/lib/utils" // was @/lib/utils
 import { Button } from "./ui/button"; // was @/components/ui/button
@@ -18,12 +18,16 @@ import {
 
 import { items } from "../scripts/module";
 
-function ItemSelect({ set }) {
+function ItemSelect({ set, id }) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   if (typeof set !== "undefined") {
     set(value);
   }
+
+  useEffect(() => {
+    if (typeof id !== "undefined") setValue(id);
+  }, []);
 
   function selectedItem() {
     if (!value) return "Select item...";

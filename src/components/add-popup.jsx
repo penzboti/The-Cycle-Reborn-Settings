@@ -10,12 +10,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog"
-import { useState } from "react";
-import { add_item, equip_item, items } from "../scripts/module";
+import { useEffect, useState } from "react";
 import { toastsettings } from "./ui/sonner";
 import { toast } from "sonner";
 
-function initiate_item_add({ value, amount, durability, slot, reload }) {
+import { add_item, equip_item, items, itemData, edit_item } from "../scripts/module";
+
+function initiate_item_add({ value, amount, durability, slot, reload, item }) {
   if (!items.some(item => item.id === value)) {
     toast.error("Not a valid item", toastsettings);
     return;
@@ -31,11 +32,25 @@ function initiate_item_add({ value, amount, durability, slot, reload }) {
     amount,
     durability,
   };
+
+  if (typeof item !== "undefined") {
+    let newitem = { ...item, ...json };
+    edit_item(item[itemData.uuid], newitem).then(() => {
+      toast("Successfully edited item", toastsettings);
+      console.log("rerender here");
+      if (typeof reload !== "undefined") reload();
+    }).catch(() => {
+      toast.error("Failed to edit item", toastsettings);
+    });
+    return;
+  }
+
+  if (typeof slot === "undefined") slot = "stash";
+
   add_item(json).then(data => {
     toast("Successfully added item", toastsettings);
     console.log(data);
-    if (slot !== "stash" && typeof slot !== "undefined") {
-      console.log("helo");
+    if (slot !== "stash") {
       equip_item(slot, data, false);
     }
     if (typeof reload !== "undefined") reload();
@@ -49,28 +64,39 @@ function initiate_item_add({ value, amount, durability, slot, reload }) {
 function AddPopup({
   slot,
   reload,
+  edit,
   ...props
 }) {
   const [value, setValue] = useState("");
   const [amount, setAmount] = useState(1);
   const [durability, setDurability] = useState(-1);
 
+  useEffect(() => {
+    if (typeof edit !== "undefined") {
+      setValue(edit[itemData.id]);
+      setAmount(edit[itemData.amount]);
+      setDurability(edit[itemData.durability]);
+    }
+  }, []);
+
+  let text = typeof edit === "undefined" ? "Add Item" : "Edit Item";
+
   return (
     <>
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="outline">Add Item</Button>
+          <Button variant="outline">{text}</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Add Item</DialogTitle>
+            <DialogTitle>{text}</DialogTitle>
             <DialogDescription>
-              into {slot}
+              in {slot}
             </DialogDescription>
           </DialogHeader>
           <div className="flex items-center gap-2">
             <div className="grid flex-1 gap-2">
-              <ItemSelect set={setValue} />
+              <ItemSelect set={setValue} id={value} />
               <p>amount</p>
               <input type="number" value={amount} onChange={e => setAmount(e.target.valueAsNumber)} />
               <p>durability</p>
@@ -81,7 +107,7 @@ function AddPopup({
               <Button variant="outline">Cancel</Button>
             </DialogClose>
             <DialogClose asChild>
-              <Button onClick={() => { initiate_item_add({ value, amount, durability, slot, reload }) }}>Add</Button>
+              <Button onClick={() => { initiate_item_add({ value, amount, durability, slot, reload, item: edit }) }}>{text}</Button>
             </DialogClose>
           </DialogFooter>
         </DialogContent>

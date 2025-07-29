@@ -42,16 +42,16 @@ function Stash() {
   const [stash, updateStash] = useState([]);
 
   async function loadStash() {
-    let stash = await get_data(queries.stash);
+    let newstash = await get_data(queries.stash);
     let loadout = await get_data(queries.loadout);
-    if (typeof stash === "undefined") {
+    if (typeof newstash === "undefined") {
       console.log("error getting stash");
       return;
     }
     let ids = getLoadoutIds(loadout);
-    stash = stash.filter(id => !ids.includes(id[itemData.uuid]));
-    console.log("stash", stash);
-    updateStash(stash);
+    newstash = newstash.filter(id => !ids.includes(id[itemData.uuid]));
+    console.log("stash", newstash);
+    updateStash(newstash);
   }
 
   // only runs on initial load

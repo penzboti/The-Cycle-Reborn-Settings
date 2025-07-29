@@ -69,6 +69,26 @@ async function equip_item(slot, id, remove) {
   }
 }
 
+function edit_item(id, item) {
+  return new Promise((resolve, reject) => {
+    remove_item(id)
+      .then(() => {
+        if (item[itemData.uuid] !== id) item[itemData.uuid] = id;
+        add_item(item)
+          .then(() => {
+            return resolve();
+          })
+          .catch(() => {
+            // Q: readd the item?
+            return reject();
+          });
+      })
+      .catch(() => {
+        return reject();
+      });
+  });
+}
+
 const items = await readTextFile("items.json", {
   baseDir: 11, // this just means the resource folder
 })
@@ -115,6 +135,7 @@ export {
   add_item,
   remove_item,
   equip_item,
+  edit_item,
   items,
   queries,
   itemData,

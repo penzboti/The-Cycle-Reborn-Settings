@@ -2,6 +2,8 @@ import { items, itemData } from "../scripts/module";
 import { Button } from "../components/ui/button";
 import { equip_item, remove_item } from "../scripts/module.js";
 
+import AddPopup from "./add-popup";
+
 function Item({
   item,
   slot,
@@ -28,6 +30,7 @@ function Item({
       <p>amount: {item[itemData.amount]}</p>
       <p>durability: {item[itemData.durability]}</p>
       <Button variant="destructive" onClick={fn}>Remove</Button>
+      <AddPopup edit={item} reload={reload} />
     </div>
   );
 }
