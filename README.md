@@ -10,11 +10,12 @@ Editing The Cycle Reborn server data without you having to manually do it trough
     - faction (points) progress
     - fortuna pass progress
 - be able to unlock maps
+    - skip tutorial here?
 - custom kits (that you make) you can apply with a click
 
 # currently
-able to see stash, loadout, see settings;
-not able to edit anything yet.
+adding, removing and editing stash and loadout items.
+edit (max out toggle) battlepass, faction progression, change currency ammount
 
 # will look into
 - forge perks (in tcf-information: forgePerks.json, these could also be useful: forgeSettings, forgeRecipies) (100% in scope)
@@ -33,7 +34,7 @@ background information about the program
 extra information found while experimenting & extra feature ideas
 
 [saving](docs/saving.md):
-how to make a save file and load another one
+how to make a save file and load another one; in mongodb
 
 [missions](docs/missons.md):
 the two locked maps need to be unlocked with missions (= contracts = quests).

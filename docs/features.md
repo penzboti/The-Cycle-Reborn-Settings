@@ -1,5 +1,5 @@
 # findings
-- bad inventory json will correct itself (like deleting it entirely) (mabye not tho)
+- bad inventory json will correct itself (like deleting it entirely) (?)
 ## items
 - itemid is just a string. it can be anything
 - if two items hold the same itemid only one of them apears.
@@ -11,8 +11,8 @@
 - keycards with negative durability dont work
 - keycards with modified durability reset to normal when used (you still get +1 use out of it)
 ## armour
-- -1 durability makes them unbreakable
-- you can make them really high rudability
+- -1 durability makes them unbreakable (do they work normally?)
+- you can make them really high durability
 ## weapons
 - durability doesnt change even when positive
 ## stash & inventory
@@ -33,4 +33,3 @@
 - custom notifications?
 - custom crates? - probably could do it with twitch drops / insurance returns; dont really need bc of kits
 - editing quarters? - you dont really need it i think
-- editing contracts progress? - would be cool to finish the fortunas favoured one (if i cant get into it any other way) (wait is it even in the game?)
