@@ -20,10 +20,13 @@ import { items } from "../scripts/module";
 
 function ItemSelect({ set, id }) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
-  if (typeof set !== "undefined") {
-    set(value);
-  }
+  const [value, setValueBackend] = useState("");
+  let setValue = (val) => {
+    setValueBackend(val);
+    if (typeof set !== "undefined") {
+      set(val);
+    }
+  };
 
   useEffect(() => {
     if (typeof id !== "undefined") setValue(id);

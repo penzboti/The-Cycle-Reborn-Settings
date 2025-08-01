@@ -1,5 +1,5 @@
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "./ui/button";
-import ItemSelect from "./item-select";
 import {
   Dialog,
   DialogClose,
@@ -10,25 +10,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog"
-import { useEffect, useState } from "react";
 import { toastsettings } from "./ui/sonner";
 import { toast } from "sonner";
 
 import { add_item, equip_item, items, itemData, edit_item } from "../scripts/module";
 
-function initiate_item_add({ value, amount, durability, slot, reload, item }) {
-  if (!items.some(item => item.id === value)) {
+import ItemSelect from "./item-select";
+
+function initiate_item_add({ json, slot, reload, item }) {
+  if (!items.some(item => item.id === json.value)) {
     toast.error("Not a valid item", toastsettings);
     return;
   }
-  if (amount < 1) {
+  if (json.amount < 1) {
     toast.error("Not a valid amount", toastsettings);
     return;
   }
 
-  console.log(arguments[0]);
-  let json = {
-    baseItemId: value,
+  json = {
+    baseItemId: json.value,
     amount,
     durability,
   };
@@ -37,7 +37,6 @@ function initiate_item_add({ value, amount, durability, slot, reload, item }) {
     let newitem = { ...item, ...json };
     edit_item(item[itemData.uuid], newitem).then(() => {
       toast("Successfully edited item", toastsettings);
-      console.log("rerender here");
       if (typeof reload !== "undefined") reload();
     }).catch(() => {
       toast.error("Failed to edit item", toastsettings);
@@ -67,52 +66,57 @@ function AddPopup({
   edit,
   ...props
 }) {
-  const [value, setValue] = useState("");
-  const [amount, setAmount] = useState(1);
-  const [durability, setDurability] = useState(-1);
+  const [json, setJson] = useState({
+    value: "",
+    amount: 1,
+    durability: -1,
+  });
+  let setValue = useCallback((value) => { setJson({ ...json, value }); });
 
   useEffect(() => {
     if (typeof edit !== "undefined") {
-      setValue(edit[itemData.id]);
-      setAmount(edit[itemData.amount]);
-      setDurability(edit[itemData.durability]);
+      let value = edit[itemData.id];
+      let amount = edit[itemData.amount];
+      let durability = edit[itemData.durability];
+
+      setJson({ value, amount, durability });
     }
   }, []);
 
-  let text = typeof edit === "undefined" ? "Add Item" : "Edit Item";
+  let bool = typeof edit === "undefined";
+  let text = bool ? "Add Item" : "Edit Item";
 
   return (
-    <>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="outline">{text}</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>{text}</DialogTitle>
-            <DialogDescription>
-              in {slot}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex items-center gap-2">
-            <div className="grid flex-1 gap-2">
-              <ItemSelect set={setValue} id={value} />
-              <p>amount</p>
-              <input type="number" value={amount} onChange={e => setAmount(e.target.valueAsNumber)} />
-              <p>durability</p>
-              <input type="number" value={durability} onChange={e => setDurability(e.target.valueAsNumber)} />
-            </div></div>
-          <DialogFooter className="sm:justify-start">
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <DialogClose asChild>
-              <Button onClick={() => { initiate_item_add({ value, amount, durability, slot, reload, item: edit }) }}>{text}</Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">{text}</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>{text}</DialogTitle>
+          <DialogDescription>
+            in{bool ? "to" : ""} {slot}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex items-center gap-2">
+          <div className="grid flex-1 gap-2">
+            <ItemSelect set={setValue} id={json.value} />
+            <p>amount</p>
+            <input type="number" value={json.amount} onChange={e => setJson({ ...json, amount: e.target.valueAsNumber })} />
+            <p>durability</p>
+            <input type="number" value={json.durability} onChange={e => setJson({ ...json, durability: e.target.valueAsNumber })} />
+          </div>
+        </div>
+        <DialogFooter className="sm:justify-start">
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+          <DialogClose asChild>
+            <Button onClick={() => { initiate_item_add({ json, slot, reload, item: edit }) }}>{text}</Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
