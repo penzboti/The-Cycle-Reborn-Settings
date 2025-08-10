@@ -9,6 +9,7 @@ lazy_static::lazy_static! {
     static ref client: Client = Client::with_uri_str(URI).unwrap();
     static ref database: Database = client.database("ProspectDb");
     static ref settings: Collection<Document> = database.collection("PlayFabUserData");
+    static ref folder: String = format!("{}\\cycle-reborn-settings\\", std::env::var("APPDATA").unwrap());
 }
 
 #[tauri::command]
@@ -141,6 +142,14 @@ fn equip_item(id: String, slot: String, remove: bool) -> bool {
     res
 }
 
+#[tauri::command]
+fn write_kit_data(_write: String) -> String {
+    let s: String = "".to_owned();
+    let var: String = folder.clone();
+    println!("{}", var);
+    s
+}
+
 // so if im not using mobile, i dont have to have these here?
 // #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -152,7 +161,8 @@ pub fn run() {
             write_data,
             add_item,
             remove_item,
-            equip_item
+            equip_item,
+            write_kit_data
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

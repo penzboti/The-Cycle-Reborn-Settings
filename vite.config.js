@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import path from "path"
-import tailwindcss from "@tailwindcss/vite"
+import path from "path";
+import tailwindcss from "@tailwindcss/vite";
 
 const host = process.env.TAURI_DEV_HOST;
 
@@ -33,6 +33,11 @@ export default defineConfig(async () => ({
       alias: {
         "@": path.resolve(__dirname, "./src"), // i dont think this works dawg
       },
+    },
+  },
+  esbuild: {
+    supported: {
+      "top-level-await": true, //browsers can handle top-level-await features
     },
   },
 }));

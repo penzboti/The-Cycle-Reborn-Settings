@@ -1,5 +1,5 @@
 import { invoke, convertFileSrc } from "@tauri-apps/api/core";
-import { readTextFile } from "@tauri-apps/plugin-fs";
+import { readTextFile, BaseDirectory } from "@tauri-apps/plugin-fs";
 import { resolveResource } from "@tauri-apps/api/path";
 
 async function get_data(key) {
@@ -60,7 +60,7 @@ async function remove_item(id) {
 
 async function equip_item(slot, id, remove) {
   if (typeof remove === "undefined") remove = false;
-  let res = await invoke("equip_item", { id, slot, remove });
+  let res = await invoke("equip_item", { slot, id, remove });
   console.log(res);
   if (res === false) {
     return Promise.reject();
@@ -90,7 +90,7 @@ function edit_item(id, item) {
 }
 
 const items = await readTextFile("items.json", {
-  baseDir: 11, // this just means the resource folder
+  baseDir: BaseDirectory.Resource,
 })
   .then((data) => {
     return JSON.parse(data);
@@ -127,6 +127,10 @@ const itemData = {
   modData: "modData", // TODO: i have not used this yet
 };
 
+function write_kit() {
+  invoke("write_kit_data", { write: "" });
+}
+
 // TODO: durability map (excluding keys, i cant be bothered)
 
 export {
@@ -136,6 +140,7 @@ export {
   remove_item,
   equip_item,
   edit_item,
+  write_kit,
   items,
   queries,
   itemData,

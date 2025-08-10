@@ -7,5 +7,9 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script type="module">
+      import { write_kit } from "./src/scripts/module.js";
+      globalThis["write"] = write_kit;
+    </script>
   </body>
 </html>
