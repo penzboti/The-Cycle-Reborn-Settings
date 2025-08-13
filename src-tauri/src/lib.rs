@@ -1,3 +1,4 @@
+// Q: separate the functions?
 use mongodb::{
     bson::{doc, Document},
     sync::{Client, Collection, Database},
@@ -6,6 +7,8 @@ use serde_json::Value;
 
 const URI: &str = "mongodb://localhost:27017";
 lazy_static::lazy_static! {
+    // TODO: check for connectivity and if not found, make sure to alert the user.
+    // then wait until the connection is reestablished
     static ref client: Client = Client::with_uri_str(URI).unwrap();
     static ref database: Database = client.database("ProspectDb");
     static ref settings: Collection<Document> = database.collection("PlayFabUserData");
