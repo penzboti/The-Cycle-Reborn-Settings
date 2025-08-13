@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { queries, get_data, itemData } from "../scripts/module";
 
-import Item from "../components/item";
-import RefreshButton from "../components/refresh";
+import ItemDisplay from "../components/item-display";
+import RefreshButton from "../components/refresh-button";
 import AddPopup from "../components/add-popup";
 
 const separateMap = ["bagItems", "safeItems"];
@@ -70,7 +70,7 @@ function Stash() {
 
       {stash.map((item) => {
         return (
-          <Item item={item} slot="stash" reload={loadStash} key={item[itemData.uuid]} />
+          <ItemDisplay item={item} slot="stash" reload={loadStash} key={item[itemData.uuid]} />
         );
       })}
     </>

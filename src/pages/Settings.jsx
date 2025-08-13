@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { queries, get_data, write_data } from "../scripts/module";
 import { Button } from "../components/ui/button";
 
-import RefreshButton from "../components/refresh";
+import RefreshButton from "../components/refresh-button";
 import { toast } from "sonner";
 
 const needed_queries = [

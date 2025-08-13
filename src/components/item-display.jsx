@@ -1,10 +1,10 @@
 import { items, itemData } from "../scripts/module";
-import { Button } from "../components/ui/button";
+import { Button } from "./ui/button";
 import { equip_item, remove_item } from "../scripts/module.js";
 
 import AddPopup from "./add-popup";
 
-function Item({
+function ItemDisplay({
   item,
   slot,
   reload,
@@ -35,4 +35,4 @@ function Item({
   );
 }
 
-export default Item;
+export default ItemDisplay;

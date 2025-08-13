@@ -144,10 +144,9 @@ fn equip_item(id: String, slot: String, remove: bool) -> bool {
 
 #[tauri::command]
 fn write_kit_data(_write: String) -> String {
-    let s: String = "".to_owned();
-    let var: String = folder.clone();
-    println!("{}", var);
-    s
+    let file =  format!("{}/kits.json",folder.clone());
+    println!("{}", file);
+    file
 }
 
 // so if im not using mobile, i dont have to have these here?

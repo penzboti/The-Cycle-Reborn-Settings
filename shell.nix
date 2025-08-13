@@ -7,6 +7,7 @@ pkgs.mkShell {
     cargo
     cargo-tauri
     nodejs
+    bun # maybe ill switch to bun
     rustc # this wasn't included, which is weird, i needed this to build my proj
   ];
 

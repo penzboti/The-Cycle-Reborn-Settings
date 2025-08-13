@@ -2,12 +2,12 @@ import { Outlet } from "react-router-dom";
 
 import "./index.css";
 
-import Menu from "./components/menu";
+import NavMenu from "./components/nav-menu";
 
 function App() {
   return (
     <>
-      <Menu />
+      <NavMenu />
 
       <Outlet />
     </>

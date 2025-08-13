@@ -1,5 +1,5 @@
-import { Button } from "../components/ui/button"; // was @/components/ui/button
-import { Toaster } from "../components/ui/sonner"; // was @/components/ui/sonner
+import { Button } from "./ui/button"; // was @/components/ui/button
+import { Toaster } from "./ui/sonner"; // was @/components/ui/sonner
 import { toast } from "sonner";
 
 function RefreshButton({
