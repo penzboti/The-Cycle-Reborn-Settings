@@ -7,7 +7,18 @@
     "core:default",
     "opener:default",
     "fs:default",
-    "fs:allow-resource-read"
+    {
+      "identifier": "fs:allow-read-text-file",
+      "allow": [
+        { "path": "$RESOURCE/items.json" }
+      ]
+    },
+    {
+      "identifier": "fs:allow-appdata-read",
+      "allow": [
+        { "path": "$APPDATA/kits.json" }
+      ]
+    }
   ]
 }
 

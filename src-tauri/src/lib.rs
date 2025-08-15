@@ -4,6 +4,7 @@ use mongodb::{
     sync::{Client, Collection, Database},
 };
 use serde_json::Value;
+use std::fs;
 
 const URI: &str = "mongodb://localhost:27017";
 lazy_static::lazy_static! {
@@ -12,7 +13,10 @@ lazy_static::lazy_static! {
     static ref client: Client = Client::with_uri_str(URI).unwrap();
     static ref database: Database = client.database("ProspectDb");
     static ref settings: Collection<Document> = database.collection("PlayFabUserData");
-    static ref folder: String = format!("{}\\cycle-reborn-settings\\", std::env::var("APPDATA").unwrap());
+    // C:\Users\penzboti\AppData\Roaming\com.cycle-reborn-settings.app (hope so)
+    // static ref folder: String = format!("{}\\cycle-reborn-settings\\", std::env::var("APPDATA").unwrap());
+    // /home/penzboti/.local/share/com.cycle-reborn-settings.app
+    static ref folder: String = format!("{}/.local/share/com.cycle-reborn-settings.app/", std::env::var("HOME").unwrap());
 }
 
 #[tauri::command]
@@ -146,10 +150,18 @@ fn equip_item(id: String, slot: String, remove: bool) -> bool {
 }
 
 #[tauri::command]
-fn write_kit_data(_write: String) -> String {
-    let file =  format!("{}/kits.json",folder.clone());
-    println!("{}", file);
-    file
+fn write_kit_data(write: String) -> bool {
+    let filepath = format!("{}kits.json",folder.clone());
+
+    // create folder
+    if !fs::exists(folder.clone()).expect("cant check for existence") {
+        let newfolder = fs::create_dir(folder.clone());
+        println!("created folder: {:?}", newfolder);
+    }
+
+    // creates the file if it doesn't exist
+    let result = fs::write(filepath, write);
+    result.is_ok()
 }
 
 // so if im not using mobile, i dont have to have these here?

@@ -127,8 +127,19 @@ const itemData = {
   modData: "modData", // TODO: i have not used this yet
 };
 
-function write_kit() {
-  invoke("write_kit_data", { write: "" });
+async function read_kit() {
+  const kits = await readTextFile("kits.json", {
+    baseDir: BaseDirectory.AppData,
+  });
+  return kits;
+}
+
+function write_kit(item) {
+  if (typeof item === "undefined") item = "";
+  // let string = JSON.stringify(item);
+  invoke("write_kit_data", { write: "" }).then( data => {
+    return data ? Promise.resolve() : Promise.reject();
+  });
 }
 
 // TODO: durability map (excluding keys, i cant be bothered)
@@ -140,6 +151,7 @@ export {
   remove_item,
   equip_item,
   edit_item,
+  read_kit,
   write_kit,
   items,
   queries,
