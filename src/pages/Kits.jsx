@@ -6,15 +6,14 @@ import { Button } from "../components/ui/button"; // was @/components/ui/button
 import RefreshButton from "../components/refresh-button";
 
 function Kits() {
-  let [kits, updateKits] = useState({});
+  let [kits, updateKits] = useState({"kitlist": []});
   async function loadKits() {
     let kits = await read_kit();
     console.log(kits);
     updateKits(kits);
   }
   async function update() {
-    let string = JSON.stringify(kits);
-    await write_kit(string);
+    await write_kit(kits);
     updateKits({...kits});
   }
 
@@ -23,8 +22,13 @@ function Kits() {
     <>
       <RefreshButton fn={loadKits} />
       <Button onClick={update}>save kits</Button>
+      { kits.kitlist.length === 0 ? <p>no kits avaliable</p> : <></> }
+      {...kits.kitlist.map( kit => {
+        return (<>
+        </>);
+      }) }
     </>
-  )
+  );
 }
 
 export default Kits;

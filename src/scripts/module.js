@@ -123,22 +123,33 @@ const itemData = {
   id: "baseItemId",
   amount: "amount",
   durability: "durability",
+  attachments: "modData", // TODO: i have not used this yet
   perks: "rolledPerks",
-  modData: "modData", // TODO: i have not used this yet
 };
 
 async function read_kit() {
-  const kits = await readTextFile("kits.json", {
-    baseDir: BaseDirectory.AppData,
+  return new Promise((resolve, reject) => {
+    readTextFile("kits.json", {
+      baseDir: BaseDirectory.AppData,
+    }).then(data => {
+        resolve(JSON.parse(data));
+      }).catch( () => {
+        write_kit().then(() => {
+          read_kit().then(data => {
+            resolve(data);
+          }).catch(() => reject());
+        }).catch(() => reject());
+      });
   });
-  return kits;
 }
 
-function write_kit(item) {
-  if (typeof item === "undefined") item = "";
-  // let string = JSON.stringify(item);
-  invoke("write_kit_data", { write: "" }).then( data => {
-    return data ? Promise.resolve() : Promise.reject();
+function write_kit(kits) {
+  return new Promise((resolve, reject) => {
+    if (typeof kits === "undefined") kits = {"kitlist":[]};
+    let string = JSON.stringify(kits);
+    invoke("write_kit_data", { write: string }).then( data => {
+      return data ? resolve() : reject();
+    });
   });
 }
 
