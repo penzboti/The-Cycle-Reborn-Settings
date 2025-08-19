@@ -5,19 +5,17 @@ import { resolveResource } from "@tauri-apps/api/path";
 async function get_data(key) {
   return new Promise((resolve, reject) => {
     invoke("get_data", { key })
-      .then(data => {
-        let json = await JSON.parse(data);
-        resolve(json);
-      })
-      .catch(msg => reject(msg));
+      .then((data) => JSON.parse(data))
+      .then((data) => resolve(data))
+      .catch((msg) => reject(msg));
   });
 }
 
 async function write_data(key, value) {
   return new Promise((resolve, reject) => {
-    invoke("write_data", { key, value, })
+    invoke("write_data", { key, value })
       .then(() => resolve())
-      .catch(msg => reject(msg));
+      .catch((msg) => reject(msg));
   });
 }
 
@@ -25,25 +23,26 @@ async function add_item(item) {
   return new Promise((resolve, reject) => {
     let string = item.string;
     invoke("add_item", { json: string })
-      .then(() => resolve())
-      .catch(msg => reject(msg));
+      .then((id) => resolve(id))
+      .catch((msg) => reject(msg));
   });
 }
 
 async function remove_item(id) {
   return new Promise((resolve, reject) => {
-  invoke("remove_item", { id })
-    .then(() => resolve())
-    .catch(msg => reject(msg));
+    invoke("remove_item", { id })
+      .then(() => resolve())
+      .catch((msg) => reject(msg));
   });
 }
 
 async function equip_item(slot, id, remove) {
   return new Promise((resolve, reject) => {
+    console.log(0, arguments);
     if (typeof remove === "undefined") remove = false;
     invoke("equip_item", { slot, id, remove })
       .then(() => resolve())
-      .catch(msg => reject(msg));
+      .catch((msg) => reject(msg));
   });
 }
 
@@ -51,12 +50,12 @@ function edit_item(id, item) {
   return new Promise((resolve, reject) => {
     remove_item(id)
       .then(() => {
-        if (item[itemData.uuid] !== id) item[itemData.uuid] = id;
+        if (item.uuid !== id) item.uuid = id;
         add_item(item)
           .then(() => resolve())
-          .catch(msg => reject(msg));
+          .catch((msg) => reject(msg));
       })
-      .catch(msg => reject(msg));
+      .catch((msg) => reject(msg));
   });
 }
 
@@ -104,23 +103,27 @@ async function read_kit() {
     readTextFile("kits.json", {
       baseDir: BaseDirectory.AppData,
     })
-      .then(data => resolve(JSON.parse(data)))
+      .then((data) => resolve(JSON.parse(data)))
       // the file is not created; we create it
       .catch(() => {
-        write_kit().then(() => {
-          read_kit().then(data => {
-            resolve(data);
-          }).catch(() => reject());
-        }).catch(() => reject());
+        write_kit()
+          .then(() => {
+            read_kit()
+              .then((data) => {
+                resolve(data);
+              })
+              .catch(() => reject());
+          })
+          .catch(() => reject());
       });
   });
 }
 
 function write_kit(kits) {
   return new Promise((resolve, reject) => {
-    if (typeof kits === "undefined") kits = {"kitlist":[]};
+    if (typeof kits === "undefined") kits = { kitlist: [] };
     let string = JSON.stringify(kits);
-    invoke("write_kit_data", { write: string }).then( data => {
+    invoke("write_kit_data", { write: string }).then((data) => {
       data ? resolve() : reject();
     });
   });

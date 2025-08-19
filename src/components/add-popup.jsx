@@ -10,14 +10,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog"
-import { toastsettings } from "./ui/sonner";
-import { toast } from "sonner";
 
-import { add_item, equip_item, items, itemData, edit_item } from "../scripts/module";
+import { items, itemData } from "../scripts/module";
+import Item from "../scripts/item-class";
 
 import ItemSelect from "./item-select";
 
-function initiate_item_add({ json, slot, reload, item }) {
+async function initiate_item_add({ json, slot, reload, item }) {
   if (!items.some(item => item.id === json.value)) {
     toast.error("Not a valid item", toastsettings);
     return;
@@ -29,34 +28,25 @@ function initiate_item_add({ json, slot, reload, item }) {
 
   json = {
     baseItemId: json.value,
-    amount,
-    durability,
+    amount: json.amount,
+    durability: json.durability,
   };
 
   if (typeof item !== "undefined") {
-    let newitem = { ...item, ...json };
-    edit_item(item[itemData.uuid], newitem).then(() => {
-      toast("Successfully edited item", toastsettings);
-      if (typeof reload !== "undefined") reload();
-    }).catch(() => {
-      toast.error("Failed to edit item", toastsettings);
-    });
+    let newitem = new Item({ ...item.item, ...json });
+    newitem.uploaded = false;
+    await newitem.edit();
+    if (typeof reload !== "undefined") reload();
     return;
   }
 
-  if (typeof slot === "undefined") slot = "stash";
+  if (typeof item === "undefined") {
+    item = new Item(json);
+  }
+  if (typeof slot === "undefined" || slot === "stash") await item.upload();
+  else await item.equip(slot);
 
-  add_item(json).then(data => {
-    toast("Successfully added item", toastsettings);
-    console.log(data);
-    if (slot !== "stash") {
-      equip_item(slot, data, false);
-    }
-    if (typeof reload !== "undefined") reload();
-  }).catch(data => {
-    toast.error("Failed to add item", toastsettings);
-    console.log(data);
-  });
+  if (typeof reload !== "undefined") reload();
 }
 
 

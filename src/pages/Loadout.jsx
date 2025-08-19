@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { get_data, queries, itemData } from "../scripts/module";
+import Item from "../scripts/item-class";
 
 import ItemDisplay from "../components/item-display";
 import RefreshButton from "../components/refresh-button";
@@ -44,7 +45,8 @@ function Loadout() {
       .forEach(key => {
         let uuid = loadout[key];
         let item = stash.find(item => item[itemData.uuid] == uuid);
-        loadout[key] = item;
+        loadout[key] = new Item({ ...item, slot: key });
+        // loadout[key] = item;
       });
 
     separateMap.forEach(key => {
@@ -52,7 +54,7 @@ function Loadout() {
       if (typeof container === "undefined") container = [];
       container = container.map(id => {
         let item = stash.find(item => item[itemData.uuid] == id);
-        return item;
+        return new Item({ ...item, slot: key + "AsJsonStr" });
       });
       container = container.filter(item => typeof item !== "undefined");
       loadout[key] = container;
@@ -76,14 +78,12 @@ function Loadout() {
         .filter(key => !separateMap.includes(key))
         .map(key => {
           let item = loadout[key];
-          let foundItem = typeof item === "undefined";
-          let content = foundItem
+          let notFoundItem = typeof item === "undefined" || item.uuid === "UUIDV4" || item.id === "";
+          let content = notFoundItem
             ? <>
-              <AddPopup slot={key} reload={loadLoadout} />
               <p>not found</p>
             </>
             : <>
-              <AddPopup slot={key} reload={loadLoadout} />
               <ItemDisplay item={item} slot={key} reload={loadLoadout} />
             </>;
 
@@ -92,6 +92,7 @@ function Loadout() {
               key={key}
             >
               <h2>{text[key]}</h2>
+              <AddPopup slot={key} reload={loadLoadout} />
               {content}
             </div>
           );
@@ -104,8 +105,9 @@ function Loadout() {
           >
             <h2>{text[key]}</h2>
             <AddPopup slot={key + "AsJsonStr"} reload={loadLoadout} />
+            <br />
             {container.length === 0 ? "empty" :
-              container.map(item => <ItemDisplay key={item[itemData.uuid]} slot={key + "AsJsonStr"} reload={loadLoadout} item={item} />)
+              container.map(item => <ItemDisplay key={item.uuid} slot={key + "AsJsonStr"} reload={loadLoadout} item={item} />)
             }
           </div>
         );

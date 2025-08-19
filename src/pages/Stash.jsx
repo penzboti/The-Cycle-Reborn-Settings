@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { queries, get_data, itemData } from "../scripts/module";
+import Item from "../scripts/item-class";
 
 import ItemDisplay from "../components/item-display";
 import RefreshButton from "../components/refresh-button";
@@ -48,8 +49,10 @@ function Stash() {
       console.log("error getting stash");
       return;
     }
-    let ids = getLoadoutIds(loadout);
-    newstash = newstash.filter(id => !ids.includes(id[itemData.uuid]));
+    // loadout items are also present in the stash in the background; i still don't want to display them here; i purge them
+    let loadoutIds = getLoadoutIds(loadout);
+    newstash = newstash.filter(i => !loadoutIds.includes(i[itemData.uuid]));
+    newstash = newstash.map(item => new Item(item));
     console.log("stash", newstash);
     updateStash(newstash);
   }
@@ -70,7 +73,7 @@ function Stash() {
 
       {stash.map((item) => {
         return (
-          <ItemDisplay item={item} slot="stash" reload={loadStash} key={item[itemData.uuid]} />
+          <ItemDisplay item={item} slot="stash" reload={loadStash} key={item.uuid} />
         );
       })}
     </>

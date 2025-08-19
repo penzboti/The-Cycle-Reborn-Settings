@@ -1,5 +1,5 @@
 // TODO: error handling with results<(),string>
-// Q: separate the functions?
+// TODO: separate the functions
 use mongodb::{
     bson::{doc, Document},
     sync::{Client, Collection, Database},
@@ -14,10 +14,11 @@ lazy_static::lazy_static! {
     static ref client: Client = Client::with_uri_str(URI).unwrap();
     static ref database: Database = client.database("ProspectDb");
     static ref settings: Collection<Document> = database.collection("PlayFabUserData");
-    // C:\Users\penzboti\AppData\Roaming\com.cycle-reborn-settings.app (hope so)
-    // static ref folder: String = format!("{}\\cycle-reborn-settings\\", std::env::var("APPDATA").unwrap());
-    // /home/penzboti/.local/share/com.cycle-reborn-settings.app
-    static ref folder: String = format!("{}/.local/share/com.cycle-reborn-settings.app/", std::env::var("HOME").unwrap());
+    // C:\Users\{username}\AppData\Roaming\cycle-reborn-settings
+    static ref folder: String = format!("{}\\cycle-reborn-settings\\", std::env::var("APPDATA").unwrap());
+    // ONLY FOR TESTING; YOU WON'T BE ABLE TO USE THE SETTINGS; LOADOUT; STASH TABS (soft-crash)
+    // /home/{username}/.local/share/com.cycle-reborn-settings.app
+    // static ref folder: String = format!("{}/.local/share/com.cycle-reborn-settings.app/", std::env::var("HOME").unwrap());
 }
 
 #[tauri::command]
@@ -45,7 +46,7 @@ fn write_data(key: String, value: String) -> bool {
 }
 
 #[tauri::command]
-fn add_item(mut json: String) -> (bool, String) {
+fn add_item(mut json: String) -> String {
     const KEY: &str = "Inventory";
     let mut inv_str = get_data(KEY.to_owned());
 
@@ -62,8 +63,7 @@ fn add_item(mut json: String) -> (bool, String) {
         inv_str.insert(1, c);
     }
 
-    let res = write_data(KEY.to_owned(), inv_str.to_owned());
-    (res, id)
+    id
 }
 
 #[tauri::command]
@@ -151,7 +151,7 @@ fn equip_item(id: String, slot: String, remove: bool) -> bool {
 
 #[tauri::command]
 fn write_kit_data(write: String) -> bool {
-    let filepath = format!("{}kits.json",folder.clone());
+    let filepath = format!("{}kits.json", folder.clone());
 
     // create folder
     if !fs::exists(folder.clone()).expect("cant check for existence") {

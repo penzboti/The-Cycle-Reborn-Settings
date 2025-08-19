@@ -3,7 +3,8 @@ import { Button } from "../components/ui/button"; // was @/components/ui/button
 import Item from "../scripts/item-class";
 
 function func() {
-  let item = new Item({durability: 10});
+  let item = new Item({ durability: 10, slot: "helmet" });
+  console.log(item.slot);
 }
 
 function Test() {

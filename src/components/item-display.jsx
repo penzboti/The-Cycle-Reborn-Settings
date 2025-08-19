@@ -1,6 +1,5 @@
 import { items, itemData } from "../scripts/module";
 import { Button } from "./ui/button";
-import { equip_item, remove_item } from "../scripts/module.js";
 
 import AddPopup from "./add-popup";
 
@@ -12,11 +11,10 @@ function ItemDisplay({
 }) {
   let uuid = item[itemData.uuid];
   let elem = items.find(elem => elem.id == item[itemData.id]);
-  if (typeof elem === "undefined") console.log("not a real item", item);
-  let fn = () => {
-    console.log("equip", slot);
-    if (slot !== "stash") equip_item(slot, uuid, true);
-    remove_item(uuid);
+  if (typeof elem === "undefined") console.log("not a real item", item, slot);
+  async function remove_fn() {
+    if (slot !== "stash") await item.deequip(true);
+    else await item.remove();
     if (typeof reload !== "undefined") reload();
   }
   return (
@@ -29,8 +27,8 @@ function ItemDisplay({
       <p>{elem.name}</p>
       <p>amount: {item[itemData.amount]}</p>
       <p>durability: {item[itemData.durability]}</p>
-      <Button variant="destructive" onClick={fn}>Remove</Button>
-      <AddPopup edit={item} reload={reload} />
+      <Button variant="destructive" onClick={remove_fn}>Remove</Button>
+      <AddPopup slot={slot} edit={item} reload={reload} />
     </div>
   );
 }
