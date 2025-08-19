@@ -26,6 +26,7 @@ function NavMenu() {
         <MenuItem to="/loadout">Loadout</MenuItem>
         <MenuItem to="/kits">Kits</MenuItem>
         <MenuItem to="/settings">Settings</MenuItem>
+        <MenuItem to="/test">Test</MenuItem>
       </NavigationMenuList>
     </NavigationMenu>
   );

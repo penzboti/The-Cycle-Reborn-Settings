@@ -1,3 +1,4 @@
+// TODO: error handling with results<(),string>
 // Q: separate the functions?
 use mongodb::{
     bson::{doc, Document},
@@ -22,7 +23,6 @@ lazy_static::lazy_static! {
 #[tauri::command]
 fn get_data(key: String) -> String {
     // println!("Getting: {}", key);
-    // Q: returning errors at all?
     let entry = settings
         .find_one(doc! { "Key": key })
         .run()

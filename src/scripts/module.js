@@ -3,70 +3,48 @@ import { readTextFile, BaseDirectory } from "@tauri-apps/plugin-fs";
 import { resolveResource } from "@tauri-apps/api/path";
 
 async function get_data(key) {
-  let res = await invoke("get_data", { key });
-  let json = await JSON.parse(res);
-  return Promise.resolve(json);
+  return new Promise((resolve, reject) => {
+    invoke("get_data", { key })
+      .then(data => {
+        let json = await JSON.parse(data);
+        resolve(json);
+      })
+      .catch(msg => reject(msg));
+  });
 }
 
 async function write_data(key, value) {
-  let res = await invoke("write_data", {
-    key,
-    value,
+  return new Promise((resolve, reject) => {
+    invoke("write_data", { key, value, })
+      .then(() => resolve())
+      .catch(msg => reject(msg));
   });
-  if (res === false) {
-    return Promise.reject();
-  } else {
-    return Promise.resolve();
-  }
 }
 
-async function add_item(input_json) {
-  // TODO: expeirment with removing some of these, and see if they work
-  let json = {
-    itemId: "UUIDV4",
-    baseItemId: "",
-    amount: 1,
-    durability: -1,
-    rolledPerks: [],
-    modData: { m: [] },
-    // these ones we will probably never use
-    primaryVanityId: 0,
-    secondaryVanityId: 0,
-    insurance: "",
-    insuranceOwnerPlayfabId: "",
-    insuredAttachmentId: "",
-    origin: { t: "", p: "", g: "" },
-  };
-  for (const key of Object.keys(input_json)) {
-    json[key] = input_json[key];
-  }
-  let string = JSON.stringify(json);
-  let res = await invoke("add_item", { json: string });
-  if (res[0] === false) {
-    return Promise.reject(res[1]);
-  } else {
-    return Promise.resolve(res[1]);
-  }
+async function add_item(item) {
+  return new Promise((resolve, reject) => {
+    let string = item.string;
+    invoke("add_item", { json: string })
+      .then(() => resolve())
+      .catch(msg => reject(msg));
+  });
 }
 
 async function remove_item(id) {
-  let res = await invoke("remove_item", { id });
-  if (res === false) {
-    return Promise.reject();
-  } else {
-    return Promise.resolve();
-  }
+  return new Promise((resolve, reject) => {
+  invoke("remove_item", { id })
+    .then(() => resolve())
+    .catch(msg => reject(msg));
+  });
 }
 
 async function equip_item(slot, id, remove) {
-  if (typeof remove === "undefined") remove = false;
-  let res = await invoke("equip_item", { slot, id, remove });
-  console.log(res);
-  if (res === false) {
-    return Promise.reject();
-  } else {
-    return Promise.resolve();
-  }
+  return new Promise((resolve, reject) => {
+    if (typeof remove === "undefined") remove = false;
+    invoke("equip_item", { slot, id, remove })
+      .then(() => resolve())
+      .catch(msg => reject(msg));
+  });
 }
 
 function edit_item(id, item) {
@@ -75,17 +53,10 @@ function edit_item(id, item) {
       .then(() => {
         if (item[itemData.uuid] !== id) item[itemData.uuid] = id;
         add_item(item)
-          .then(() => {
-            return resolve();
-          })
-          .catch(() => {
-            // Q: readd the item?
-            return reject();
-          });
+          .then(() => resolve())
+          .catch(msg => reject(msg));
       })
-      .catch(() => {
-        return reject();
-      });
+      .catch(msg => reject(msg));
   });
 }
 
@@ -98,7 +69,7 @@ const items = await readTextFile("items.json", {
   .then((data) => {
     data.map(async (item) => {
       let image = item.image;
-      image = await resolveResource(image.replace("$RESOURCE/", "")); // Q: remove the resource prefix?
+      image = await resolveResource(image.replace("$RESOURCE/", "")); // Q: remove the resource prefix entirely?
       image = convertFileSrc(image);
       item.image = image;
       return item;
@@ -123,17 +94,19 @@ const itemData = {
   id: "baseItemId",
   amount: "amount",
   durability: "durability",
-  attachments: "modData", // TODO: i have not used this yet
+  attachments: "modData", // TODO: i have not used these yet
   perks: "rolledPerks",
 };
 
+// NOTE: not properly error-handled
 async function read_kit() {
   return new Promise((resolve, reject) => {
     readTextFile("kits.json", {
       baseDir: BaseDirectory.AppData,
-    }).then(data => {
-        resolve(JSON.parse(data));
-      }).catch( () => {
+    })
+      .then(data => resolve(JSON.parse(data)))
+      // the file is not created; we create it
+      .catch(() => {
         write_kit().then(() => {
           read_kit().then(data => {
             resolve(data);
@@ -148,7 +121,7 @@ function write_kit(kits) {
     if (typeof kits === "undefined") kits = {"kitlist":[]};
     let string = JSON.stringify(kits);
     invoke("write_kit_data", { write: string }).then( data => {
-      return data ? resolve() : reject();
+      data ? resolve() : reject();
     });
   });
 }

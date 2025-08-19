@@ -10,6 +10,7 @@ import Stash from './pages/Stash';
 import Loadout from './pages/Loadout';
 import Kits from './pages/Kits';
 import Settings from './pages/Settings';
+import Test from './pages/Test';
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -21,6 +22,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="loadout" element={<Loadout />} />
           <Route path="kits" element={<Kits />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="test" element={<Test />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
