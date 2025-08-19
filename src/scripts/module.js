@@ -97,35 +97,38 @@ const itemData = {
   perks: "rolledPerks",
 };
 
-// NOTE: not properly error-handled
-async function read_kit() {
+async function read_kit(depth) {
   return new Promise((resolve, reject) => {
     readTextFile("kits.json", {
       baseDir: BaseDirectory.AppData,
     })
-      .then((data) => resolve(JSON.parse(data)))
+      .then((data) => {
+        resolve(JSON.parse(data));
+      })
       // the file is not created; we create it
-      .catch(() => {
+      .catch((err) => {
+        if (depth === 1) {
+          reject("failed to read kits.json");
+          console.error(err);
+        }
         write_kit()
           .then(() => {
-            read_kit()
-              .then((data) => {
-                resolve(data);
-              })
-              .catch(() => reject());
+            read_kit(1)
+              .then((data) => resolve(data))
+              .catch((msg) => reject(msg));
           })
-          .catch(() => reject());
+          .catch((msg) => reject(msg));
       });
   });
 }
 
-function write_kit(kits) {
+async function write_kit(kits) {
   return new Promise((resolve, reject) => {
     if (typeof kits === "undefined") kits = { kitlist: [] };
     let string = JSON.stringify(kits);
-    invoke("write_kit_data", { write: string }).then((data) => {
-      data ? resolve() : reject();
-    });
+    invoke("write_kit_data", { write: string })
+      .then(() => resolve())
+      .catch((msg) => reject(msg));
   });
 }
 
